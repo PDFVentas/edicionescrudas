@@ -543,63 +543,52 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
 /* =========================================================
-   DATOS INICIALES (placeholder / semilla)
-   -> En producción esto se reemplaza por una consulta a Supabase.
+   CONEXIÓN A SUPABASE
 ========================================================= */
+const SUPABASE_URL = 'https://hfxduchpixftimmhbqdm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_rE1QCRUlF4FAJph_UhDR8w_7v4PnjRH';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Libro semilla: se inserta una única vez si la tabla está vacía.
 const SEED_BOOKS = [
   {
-    id: 'b1',
     title: '100 preguntas que no te animás a responder',
     category: 'Autoayuda',
     price: 4500,
     review: 'Un libro de autoayuda sin frases hechas: cien preguntas incómodas, directas, pensadas para que te mires al espejo sin filtros. No es un manual de bienestar, es un espejo.',
-    cover: ''
-  },
-  {
-    id: 'b2',
-    title: 'Lo que no se dice en las despedidas',
-    category: 'Relatos',
-    price: 3900,
-    review: 'Una colección de relatos breves sobre finales que no cerraron bien. Historias crudas sobre lo que se queda pendiente cuando alguien se va.',
-    cover: ''
-  },
-  {
-    id: 'b3',
-    title: 'Ensayos sin anestesia',
-    category: 'Ensayo',
-    price: 5200,
-    review: 'Una serie de ensayos sobre la cultura del bienestar forzado, la productividad como religión y el derecho a estar mal sin justificarse.',
-    cover: ''
+    cover_url: ''
   }
 ];
 
-const STORAGE_KEY = 'ec_books_v1';
 const CART_KEY = 'ec_cart_v1';
-const ADMIN_KEY = 'ec_admin_session';
-// Credenciales demo — cambiar por autenticación real (Supabase Auth) antes de publicar en producción.
-const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'edicionescrudas2026';
 
-function loadBooks(){
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if(raw){ try{ return JSON.parse(raw); }catch(e){} }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_BOOKS));
-  return SEED_BOOKS.slice();
-}
-function saveBooks(books){ localStorage.setItem(STORAGE_KEY, JSON.stringify(books)); }
-
-let books = loadBooks();
+let books = [];
 let cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
 let activeFilter = 'Todas';
+let currentSession = null;
 
 function fmt(n){ return '$' + Number(n).toLocaleString('es-AR'); }
-
 function initials(title){
   return title.split(' ').filter(w=>w.length>2).slice(0,2).map(w=>w[0]).join('').toUpperCase() || title[0];
+}
+// Adaptador: la base usa "cover_url", el front usa "cover" para no reescribir toda la UI.
+function mapRow(r){ return { id: r.id, title: r.title, category: r.category, price: r.price, review: r.review, cover: r.cover_url || '' }; }
+
+async function loadBooksFromDB(){
+  const { data, error } = await sb.from('books').select('*').order('created_at', { ascending: true });
+  if(error){ console.error(error); showToast('Error cargando el catálogo'); return []; }
+  if(data.length === 0){
+    // Primera vez: sembramos el libro inicial.
+    await sb.from('books').insert(SEED_BOOKS);
+    const again = await sb.from('books').select('*').order('created_at', { ascending: true });
+    return (again.data || []).map(mapRow);
+  }
+  return data.map(mapRow);
 }
 
 /* ---------- CATALOG RENDER ---------- */
@@ -721,16 +710,22 @@ document.getElementById('checkoutBtn').addEventListener('click', ()=>{
   showToast('Demo: acá se conecta Mercado Pago Checkout Pro');
 });
 
-/* ---------- ADMIN ---------- */
+/* ---------- ADMIN (Supabase Auth real) ---------- */
 const adminModal = document.getElementById('adminModal');
 const adminBody = document.getElementById('adminBody');
 const adminTitle = document.getElementById('adminTitle');
 
-function isLogged(){ return sessionStorage.getItem(ADMIN_KEY) === '1'; }
+async function isLogged(){
+  const { data } = await sb.auth.getSession();
+  currentSession = data.session;
+  return !!currentSession;
+}
 
-function openAdmin(){
+async function openAdmin(){
   adminModal.classList.add('show');
-  isLogged() ? renderAdminPanel() : renderLogin();
+  adminBody.innerHTML = '<p style="text-align:center;color:var(--ink-soft);">Cargando…</p>';
+  const logged = await isLogged();
+  logged ? renderAdminPanel() : renderLogin();
 }
 function closeAdmin(){ adminModal.classList.remove('show'); }
 document.getElementById('adminFab').addEventListener('click', openAdmin);
@@ -739,23 +734,24 @@ document.getElementById('closeAdmin').addEventListener('click', closeAdmin);
 function renderLogin(){
   adminTitle.textContent = 'Iniciar sesión — Panel administrativo';
   adminBody.innerHTML = `
-    <div class="admin-note">Acceso exclusivo para el equipo de Ediciones Crudas. Demo: usuario <b>admin</b> / clave <b>edicionescrudas2026</b>. En producción esto se reemplaza por Supabase Auth.</div>
+    <div class="admin-note">Acceso exclusivo para el equipo de Ediciones Crudas. Ingresá con el mail y contraseña que creaste en Supabase Authentication.</div>
     <form class="login-form" id="loginForm">
-      <div class="field"><label>Usuario</label><input type="text" id="loginUser" required></div>
+      <div class="field"><label>Email</label><input type="email" id="loginUser" required></div>
       <div class="field"><label>Contraseña</label><input type="password" id="loginPass" required></div>
-      <div class="admin-error" id="loginError" style="display:none;">Usuario o contraseña incorrectos.</div>
+      <div class="admin-error" id="loginError" style="display:none;">Email o contraseña incorrectos.</div>
       <button class="btn btn-primary" style="width:100%;justify-content:center;">Ingresar</button>
     </form>
   `;
-  document.getElementById('loginForm').addEventListener('submit', (e)=>{
+  document.getElementById('loginForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
-    const u = document.getElementById('loginUser').value.trim();
-    const p = document.getElementById('loginPass').value;
-    if(u===ADMIN_USER && p===ADMIN_PASS){
-      sessionStorage.setItem(ADMIN_KEY,'1');
-      renderAdminPanel();
-    } else {
+    const email = document.getElementById('loginUser').value.trim();
+    const password = document.getElementById('loginPass').value;
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if(error){
       document.getElementById('loginError').style.display='block';
+    } else {
+      currentSession = data.session;
+      renderAdminPanel();
     }
   });
 }
@@ -766,22 +762,21 @@ let editingId = null;
 function renderAdminPanel(){
   adminTitle.innerHTML = `Panel administrativo <button class="remove-link" id="logoutBtn" style="margin-left:14px;">Cerrar sesión</button>`;
   adminBody.innerHTML = `
-    <div class="admin-note">Los cambios se guardan en este navegador (modo demo). Para que se vean en la web pública para todos los visitantes, hay que conectar esta parte a Supabase — ver guía adjunta.</div>
+    <div class="admin-note">Los cambios se guardan directamente en la base de datos de Supabase: se ven al instante para todos los visitantes del sitio.</div>
     <div class="tabs-admin">
       <button data-tab="list" class="${adminTab==='list'?'active':''}">Libros publicados</button>
       <button data-tab="new" class="${adminTab==='new'?'active':''}">${editingId ? 'Editar libro' : 'Publicar nuevo libro'}</button>
     </div>
     <div id="adminTabBody"></div>
   `;
-  document.getElementById('logoutBtn').addEventListener('click', (e)=>{
+  document.getElementById('logoutBtn').addEventListener('click', async (e)=>{
     e.stopPropagation();
-    sessionStorage.removeItem(ADMIN_KEY);
+    await sb.auth.signOut();
     renderLogin();
   });
   adminBody.querySelectorAll('.tabs-admin button').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       adminTab = btn.dataset.tab;
-      if(adminTab==='new' && !editingId){ /* clean form */ }
       renderAdminPanel();
     });
   });
@@ -808,11 +803,13 @@ function renderAdminList(){
     btn.addEventListener('click', ()=>{ editingId = btn.dataset.edit; adminTab='new'; renderAdminPanel(); });
   });
   body.querySelectorAll('[data-del]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
+    btn.addEventListener('click', async ()=>{
       if(confirm('¿Eliminar este libro del catálogo?')){
-        books = books.filter(b=>b.id!==btn.dataset.del);
-        saveBooks(books);
+        const { error } = await sb.from('books').delete().eq('id', btn.dataset.del);
+        if(error){ showToast('Error al eliminar'); return; }
+        books = await loadBooksFromDB();
         renderAdminList(); renderFilters(); renderCatalog();
+        showToast('Libro eliminado');
       }
     });
   });
@@ -833,6 +830,7 @@ function renderAdminForm(){
       <div class="field"><label>Reseña</label><textarea id="fReview" required>${editing?editing.review:''}</textarea></div>
       <div class="field"><label>Portada (imagen, opcional)</label><input type="file" id="fCoverFile" accept="image/*">
         <input type="hidden" id="fCover" value="${editing?editing.cover:''}">
+        <small id="uploadStatus" style="color:var(--ink-soft);"></small>
       </div>
       <div style="display:flex;gap:10px;">
         <button class="btn btn-primary" type="submit">${editing?'Guardar cambios':'Publicar libro'}</button>
@@ -841,33 +839,39 @@ function renderAdminForm(){
     </form>
   `;
   const fileInput = document.getElementById('fCoverFile');
-  fileInput.addEventListener('change', ()=>{
+  fileInput.addEventListener('change', async ()=>{
     const file = fileInput.files[0];
     if(!file) return;
-    const reader = new FileReader();
-    reader.onload = ()=> document.getElementById('fCover').value = reader.result;
-    reader.readAsDataURL(file);
+    document.getElementById('uploadStatus').textContent = 'Subiendo portada…';
+    const path = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g,'_')}`;
+    const { error } = await sb.storage.from('covers').upload(path, file);
+    if(error){ document.getElementById('uploadStatus').textContent = 'Error al subir la imagen.'; return; }
+    const { data } = sb.storage.from('covers').getPublicUrl(path);
+    document.getElementById('fCover').value = data.publicUrl;
+    document.getElementById('uploadStatus').textContent = 'Portada subida ✓';
   });
   if(editing){
     document.getElementById('cancelEdit').addEventListener('click', ()=>{ editingId=null; adminTab='list'; renderAdminPanel(); });
   }
-  document.getElementById('bookForm').addEventListener('submit', (e)=>{
+  document.getElementById('bookForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
-    const data = {
+    const payload = {
       title: document.getElementById('fTitle').value.trim(),
       category: document.getElementById('fCategory').value.trim(),
       price: Number(document.getElementById('fPrice').value),
       review: document.getElementById('fReview').value.trim(),
-      cover: document.getElementById('fCover').value
+      cover_url: document.getElementById('fCover').value
     };
+    let error;
     if(editing){
-      Object.assign(editing, data);
+      ({ error } = await sb.from('books').update(payload).eq('id', editing.id));
     } else {
-      books.push({ id: 'b'+Date.now(), ...data });
+      ({ error } = await sb.from('books').insert(payload));
     }
-    saveBooks(books);
+    if(error){ showToast('Error al guardar'); return; }
     editingId = null;
     adminTab = 'list';
+    books = await loadBooksFromDB();
     renderAdminPanel();
     renderFilters(); renderCatalog();
     showToast('Catálogo actualizado');
@@ -883,9 +887,12 @@ document.getElementById('burgerBtn').addEventListener('click', ()=>{
 });
 
 /* ---------- INIT ---------- */
-renderFilters();
-renderCatalog();
-renderCartCount();
+(async function init(){
+  books = await loadBooksFromDB();
+  renderFilters();
+  renderCatalog();
+  renderCartCount();
+})();
 </script>
 </body>
 </html>
