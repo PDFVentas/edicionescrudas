@@ -842,22 +842,35 @@ function renderAdminForm(){
     </form>
   `;
   const fileInput = document.getElementById('fCoverFile');
+  const submitBtn = document.querySelector('#bookForm button[type="submit"]');
+  let uploading = false;
   fileInput.addEventListener('change', async ()=>{
     const file = fileInput.files[0];
     if(!file) return;
-    document.getElementById('uploadStatus').textContent = 'Subiendo portada…';
+    const status = document.getElementById('uploadStatus');
+    uploading = true;
+    submitBtn.disabled = true;
+    status.textContent = 'Subiendo portada…';
     const path = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g,'_')}`;
-    const { error } = await sb.storage.from('covers').upload(path, file);
-    if(error){ document.getElementById('uploadStatus').textContent = 'Error al subir la imagen.'; return; }
+    const { error } = await sb.storage.from('covers').upload(path, file, { contentType: file.type, upsert: false });
+    uploading = false;
+    submitBtn.disabled = false;
+    if(error){
+      console.error('Error subiendo portada:', error);
+      document.getElementById('fCover').value = '';
+      status.textContent = 'Error al subir la imagen: ' + error.message;
+      return;
+    }
     const { data } = sb.storage.from('covers').getPublicUrl(path);
     document.getElementById('fCover').value = data.publicUrl;
-    document.getElementById('uploadStatus').textContent = 'Portada subida ✓';
+    status.textContent = 'Portada subida ✓';
   });
   if(editing){
     document.getElementById('cancelEdit').addEventListener('click', ()=>{ editingId=null; adminTab='list'; renderAdminPanel(); });
   }
   document.getElementById('bookForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
+    if(uploading){ showToast('Esperá a que termine de subir la portada'); return; }
     const payload = {
       title: document.getElementById('fTitle').value.trim(),
       category: document.getElementById('fCategory').value.trim(),
@@ -871,7 +884,7 @@ function renderAdminForm(){
     } else {
       ({ error } = await sb.from('books').insert(payload));
     }
-    if(error){ showToast('Error al guardar'); return; }
+    if(error){ console.error('Error al guardar:', error); showToast('Error al guardar: ' + error.message); return; }
     editingId = null;
     adminTab = 'list';
     books = await loadBooksFromDB();
