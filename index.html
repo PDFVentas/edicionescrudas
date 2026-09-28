@@ -79,7 +79,7 @@
 
   /* ---------- HERO ---------- */
   .hero{
-    padding:96px 24px 80px;
+    padding:28px 24px 80px;
     text-align:center;
     position:relative;
     overflow:hidden;
@@ -98,7 +98,8 @@
     font-size:clamp(2.4rem,6vw,4.4rem);
     line-height:1.04;
     margin:18px auto 22px;
-    max-width:14ch;
+    max-width:none;
+    white-space:nowrap;
     font-weight:500;
   }
   .hero h1 .accent{font-style:italic;color:var(--ink-soft);}
@@ -350,7 +351,8 @@
     .book-body h3{font-size:16px;}
     .price{font-size:17px;}
     .section{padding:60px 0;}
-    .hero{padding:70px 20px 56px;}
+    .hero{padding:24px 20px 56px;}
+    .hero h1{white-space:normal;max-width:14ch;}
     .field-row{grid-template-columns:1fr;}
   }
   @media (max-width:420px){
@@ -410,9 +412,10 @@
 
 <section class="hero">
   <div class="wrap">
-    <div class="hero-eyebrow">Ediciones Crudas</div>
+    <div class="hero-eyebrow"></div>
     <h1>Donde las preguntas <span class="accent">incomodan</span></h1>
-    <p>Libros directos, sin filtro, para lectores que prefieren la verdad incómoda antes que la ficción cómoda. Formato digital, entrega inmediata.</p>
+    <p>Libros, sin filtro, para lectores que prefieren la verdad incómoda antes que la ficción acomodada.</p>
+    <p>Formato digital, entrega inmediata.</p>
     <div class="hero-cta">
       <a href="#catalogo" class="btn btn-primary">Ver catálogo</a>
       <a href="#nosotros" class="btn btn-ghost">Quiénes somos</a>
