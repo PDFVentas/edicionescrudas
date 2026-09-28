@@ -384,6 +384,20 @@
     --quartz:#17161B;--quartz-2:#1F1E24;--ink:#F3F1EA;--ink-soft:#B8B4AC;
     --line: rgba(255,255,255,0.12);--white:#211F25;--gold:#C9A15F;--gold-soft:#D9B879;
   }
+
+  /* ---------- CHECKOUT / DESCARGAS ---------- */
+  .cart-email{width:100%;padding:11px 12px;border:1px solid var(--line);background:var(--white);font:inherit;font-size:14px;margin-bottom:12px;}
+  .cart-email:focus{outline:none;border-color:var(--gold);}
+  .cart-error{color:#a13f3f;font-size:12.5px;margin:-4px 0 12px;display:none;}
+  .btn[disabled]{opacity:.6;cursor:wait;}
+  .order-msg{font-size:15px;line-height:1.6;color:var(--ink-soft);margin:0 0 18px;}
+  .dl-list{display:flex;flex-direction:column;gap:10px;margin:18px 0;}
+  .dl-link{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);background:var(--white);color:var(--ink);text-decoration:none;font-size:14.5px;}
+  .dl-link:hover{border-color:var(--gold);}
+  .dl-link span.go{color:var(--gold);font-weight:500;white-space:nowrap;}
+  .dl-off{opacity:.65;}
+  .badge-nopdf{display:inline-block;margin-left:8px;font-size:11px;color:#a13f3f;border:1px solid #a13f3f;padding:1px 6px;border-radius:999px;}
+  .add-btn[disabled]{opacity:.55;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -478,11 +492,11 @@
       </div>
       <div class="step">
         <div class="step-index">3</div>
-        <div><h4>Recibí tu PDF</h4><p>Descarga inmediata al confirmarse el pago, más un correo con el archivo y tu factura.</p></div>
+        <div><h4>Recibí tu PDF</h4><p>Descarga inmediata al confirmarse el pago. Guardá la página de descarga en favoritos para volver a bajarlo.</p></div>
       </div>
       <div class="step">
         <div class="step-index">4</div>
-        <div><h4>Guardá tu comprobante</h4><p>Te enviamos la factura de la compra a tu casilla de correo automáticamente.</p></div>
+        <div><h4>Guardá tu comprobante</h4><p>Mercado Pago te envía el comprobante del pago a tu casilla de correo.</p></div>
       </div>
     </div>
   </div>
@@ -529,11 +543,13 @@
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-footer" id="cartFooter" style="display:none;">
     <div class="cart-total-row"><span>Total</span><strong id="cartTotal">$0</strong></div>
+    <input type="email" id="cartEmail" class="cart-email" placeholder="Tu email (para tu comprobante)" autocomplete="email" inputmode="email">
+    <div class="cart-error" id="cartError"></div>
     <button class="btn btn-primary" style="width:100%;justify-content:center;gap:10px;" id="checkoutBtn">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTA0IiBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgMTUwIDEwNCI+PHBhdGggZmlsbD0iIzBBMDA4MCIgZD0iTTE1MCA0OS4wMjdjMC0yNi45NDQtMzMuNjg1LTQ4Ljg3LTc1LTQ4Ljg3LTQxLjUwMSAwLTc1IDIxLjkyNi03NSA0OC44N3YyLjc4N2MwIDI4LjYxNiAyOS40MDQgNTEuODQzIDc1IDUxLjg0MyA0NS45NjggMCA3NS0yMy4yMjcgNzUtNTEuODQzdi0yLjc4N1oiLz48cGF0aCBmaWxsPSIjMkFCQ0ZGIiBkPSJNMTQ3LjAyMiA0OS4wMjdjMCAyNS40NTctMzIuMTk2IDQ2LjA4My03Mi4wMjIgNDYuMDgzLTM5LjgyNiAwLTcyLjAyMi0yMC42MjYtNzIuMDIyLTQ2LjA4M0MyLjk3OCAyMy41NyAzNS4xNzQgMi45NDQgNzUgMi45NDRjMzkuODI2LjE4NiA3Mi4wMjIgMjAuNjI2IDcyLjAyMiA0Ni4wODNaIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTUwLjk5MyAzNC41MzNzLS43NDUuNzQzLS4zNzMgMS40ODdjMS4xMTcgMS40ODYgNC42NTMgMi4yMyA4LjE4OSAxLjQ4NiAyLjA0Ny0uNTU3IDQuODM5LTIuNjAxIDcuNDQ0LTQuNjQ1IDIuNzkyLTIuMjMgNS41ODMtNC40NiA4LjU2LTUuMzg5IDIuOTc5LS45MyA0Ljg0LS41NTggNi4xNDItLjE4NiAxLjQ5LjM3MiAyLjk3OCAxLjMgNS41ODQgMy4zNDUgNS4wMjQgMy43MTYgMjQuNzUxIDIwLjk5NyAyOC4xMDEgMjMuOTcgMi43OTItMS4zIDE1LjA3NS02LjUwMyAzMS42MzgtMTAuMjItMS4xMTctOC45MTktNi41MTQtMTcuMDk1LTE0LjcwMi0yMy43ODQtMTEuMzUzIDQuODMxLTI1LjMxIDcuMjQ3LTM5LjA4Mi41NTcgMCAwLTcuNDQ0LTMuNTMtMTQuNzAyLTMuMzQ1LTEwLjc5NC4xODYtMTUuNDQ3IDUuMDE3LTIwLjQ3MiA5Ljg0OWwtNi4zMjcgNi44NzVaIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTExNC4wODIgNTYuMjc0Yy0uMTg2LS4xODYtMjMuMjYzLTIwLjQ0LTI4LjQ3NC0yNC4zNDItMi45NzgtMi4yMy00LjY1My0yLjc4OC02LjUxNC0zLjE2LS45My0uMTg1LTIuMjMzIDAtMy4xNjMuMzcyLTIuNDIuNzQ0LTUuNTg0IDIuNzg4LTguMzc1IDUuMDE3LTIuOTc4IDIuNDE2LTUuNzcgNC40Ni04LjE4OSA1LjAxNy0zLjE2My45My03LjI1OCAwLTkuMTE5LTEuMTE0LS43NDQtLjU1OC0xLjMwMy0xLjExNS0xLjQ4OS0xLjY3My0uNzQ0LTEuNDg2LjU1OS0yLjc4Ny43NDUtMi45NzNsNi4zMjctNi44NzUgMi4yMzMtMi4yM2MtMi4wNDcuMTg2LTMuOTA4Ljc0My01Ljc2OSAxLjMtMi4yMzMuNTU4LTQuNDY2IDEuMzAyLTYuNyAxLjMwMi0uOTMgMC01Ljk1NS0uNzQ0LTYuODg1LTEuMTE1LTUuNzctMS40ODctMTAuNzk0LTMuMTYtMTguNDI1LTYuNjlDMTEuMTY2IDI1LjggNS4yMTEgMzQuMTYxIDMuNTM2IDQzLjQ1MmMxLjMwMy4zNzIgMy4zNS45MyA0LjI4IDEuMTE1IDIwLjQ3MiA0LjQ2IDI2LjggOS4yOTEgMjguMTAyIDEwLjIyIDEuMzAzLTEuMyAyLjk3OC0yLjIzIDUuMDI1LTIuMjMgMi4yMzMgMCA0LjI4IDEuMTE1IDUuNTgzIDIuOTc0IDEuMTE3LS45MyAyLjc5Mi0xLjY3MyA0LjgzOS0xLjY3My45MyAwIDEuODYuMTg2IDIuOTc3LjU1OGE2LjgzIDYuODMgMCAwIDEgNC4wOTUgMy43MTZjLjc0NC0uMzcyIDEuNjc1LS41NTcgMi43OTEtLjU1NyAxLjExNyAwIDIuMjMzLjE4NSAzLjM1Ljc0MyAzLjcyMiAxLjY3MiA0LjI4IDUuMzg5IDQuMDk0IDguMTc2aC43NDVjNC40NjYgMCA4LjE4OSAzLjcxNiA4LjE4OSA4LjE3NiAwIDEuMy0uMzczIDIuNjAxLS45MzEgMy45MDIgMS4zMDMuNzQzIDQuMjggMi4yMyA3LjA3MiAxLjg1OCAyLjIzMy0uMTg2IDIuOTc4LS45MjkgMy4zNS0xLjQ4Ni4xODYtLjM3Mi4zNzItLjU1OC4xODYtLjkzbC01Ljc3LTYuNTAzcy0uOTMtLjkzLS41NTgtMS4zYy4zNzMtLjM3Mi45My4xODUgMS4zMDMuNTU3IDIuOTc4IDIuNDE1IDYuNTE0IDYuMTMyIDYuNTE0IDYuMTMycy4zNzIuNTU3IDEuNjc1Ljc0M2MxLjExNi4xODYgMy4xNjMgMCA0LjY1Mi0xLjExNS4zNzMtLjM3Mi43NDUtLjc0My45My0xLjExNSAxLjQ5LTEuODU4LS4xODUtMy43MTYtLjE4NS0zLjcxNmwtNi43LTcuNjE5cy0uOTMtLjkyOS0uNTU4LTEuM2MuMzcyLS4zNzIuOTMuMTg1IDEuMzAyLjU1N2EyNTMuMjA2IDI1My4yMDYgMCAwIDEgOC4wMDMgNy42MTljLjU1OC4zNzEgMy4xNjQgMi4wNDQgNi41MTMtLjE4NiAyLjA0OC0xLjMwMSAyLjQyLTIuOTczIDIuNDItNC4yNzQtLjE4Ni0xLjY3Mi0xLjQ4OS0yLjc4Ny0xLjQ4OS0yLjc4N2wtOS4zMDUtOS4yOTFzLS45My0uNzQ0LS41NTgtMS4zMDFjLjM3Mi0uMzcyLjkzLjE4NiAxLjMwMi41NTcgMi45NzggMi40MTYgMTAuOTggOS42NjMgMTAuOTggOS42NjMuMTg2IDAgMi43OTIgMi4wNDQgNi4zMjgtLjE4NiAxLjMwMy0uNzQzIDIuMDQ3LTEuODU4IDIuMDQ3LTMuMzQ1LS4zNzItMi4wNDQtMi4wNDctMy41My0yLjA0Ny0zLjUzWiIvPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik02OS40MTcgNjcuOThjLTEuNDg5IDAtMi45NzguNzQ0LTMuMTY0Ljc0NC0uMTg2IDAgMC0uNTU4LjE4Ni0uOTMuMTg2LS4zNzEgMi4wNDctNS45NDYtMi42MDUtNy45OS0zLjUzNi0xLjQ4Ni01LjU4My4xODYtNi4zMjguOTMtLjE4Ni4xODUtLjM3Mi4xODUtLjM3MiAwIDAtLjkzLS41NTgtMy43MTctMy41MzYtNC42NDYtNC4yOC0xLjMtNy4wNzIgMS42NzItNy44MTYgMi43ODctLjM3My0yLjQxNS0yLjQyLTQuNDYtNS4wMjUtNC40NmE1IDUgMCAwIDAtNS4wMjUgNS4wMTggNSA1IDAgMCAwIDUuMDI1IDUuMDE3YzEuMzAzIDAgMi42MDUtLjU1OCAzLjUzNi0xLjQ4N3YuMTg2Yy0uMTg2IDEuMy0uNTU5IDUuNzYgNC4wOTQgNy42MTkgMS44NjEuNzQzIDMuNTM2LjE4NiA0LjgzOS0uNzQ0LjM3Mi0uMzcxLjM3Mi0uMTg1LjM3Mi4xODYtLjE4NiAxLjExNSAwIDMuNzE3IDMuNTM2IDUuMDE3IDIuNjA1IDEuMTE1IDQuMjggMCA1LjIxLS45MjkuMzczLS4zNzEuNTYtLjM3MS41Ni4zNzIuMTg1IDMuMzQ1IDIuOTc3IDUuOTQ2IDYuMzI3IDUuOTQ2IDMuNTM2IDAgNi4zMjctMi43ODcgNi4zMjctNi4zMTguMTg2LTMuMzQ0LTIuNjA1LTYuMTMyLTYuMTQxLTYuMzE4WiIvPjxwYXRoIGZpbGw9IiMwQTAwODAiIGQ9Ik0xMTUuMDEyIDUzLjg1OGMtNy4wNzItNi4xMzItMjMuNjM1LTIwLjQ0LTI3LjkxNS0yMy43ODUtMi42MDYtMS44NTgtNC4yOC0yLjk3My01Ljc3LTMuMzQ0LS43NDQtLjE4Ni0xLjY3NC0uMzcyLTIuNzkxLS4zNzJzLTIuNDIuMTg2LTMuNTM2LjU1OGMtMi43OTIuOTI5LTUuNzcgMy4xNTgtOC41NiA1LjM4OGwtLjE4Ny4xODZjLTIuNjA1IDIuMDQ0LTUuMjEgNC4wODgtNy4yNTggNC42NDYtLjkzLjE4NS0xLjg2MS4zNzEtMi42MDUuMzcxLTIuMjM0IDAtNC4yOC0uNzQzLTUuMDI1LTEuNjcyLS4xODYtLjE4NiAwLS4zNzIuMTg2LS43NDRsNi4xNDEtNy4wNmM0LjgzOS00LjgzMiA5LjQ5Mi05LjQ3NyAyMC4xLTkuNjYzaC41NThjNi43IDAgMTMuMjEzIDIuOTczIDEzLjk1OCAzLjM0NSA2LjMyNyAyLjk3MyAxMi42NTUgNC40NiAxOS4xNjggNC40NiA2LjcgMCAxMy41ODYtMS42NzMgMjEuMDMtNS4wMTgtLjc0NC0uNzQzLTEuNjc1LTEuMy0yLjYwNS0yLjA0NC02LjMyOCAyLjc4Ny0xMi40NjkgNC4wODgtMTguNDI1IDQuMDg4LTUuOTU1IDAtMTIuMDk2LTEuNDg2LTE3Ljg2Ni00LjI3NC0uMzcyLS4xODYtNy42My0zLjUzLTE1LjI2LTMuNTNoLS41NThjLTguOTMzLjE4Ni0xMy45NTggMy4zNDQtMTcuMzA4IDYuMTMyLTMuMzUgMC02LjE0Mi45MjktOC43NDcgMS42NzItMi4yMzMuNTU4LTQuMjggMS4xMTUtNi4xNDIgMS4xMTVoLTIuMjMzYy0yLjIzMyAwLTEzLjIxMy0yLjc4Ny0yMS45Ni02LjEzMi0uOTMuNTU3LTEuNjc1IDEuMy0yLjYwNSAyLjA0NCA5LjExOSAzLjcxNiAyMC4yODUgNi42OSAyMy44MiA2Ljg3NS45MzEgMCAyLjA0OC4xODYgMi45NzkuMTg2IDIuMjMzIDAgNC42NTItLjU1NyA2Ljg4NS0xLjMgMS4zMDMtLjM3MiAyLjc5Mi0uNzQ0IDQuMjgtMS4xMTZsLTEuMzAyIDEuMzAxLTYuMzI4IDYuODc2Yy0uNTU4LjU1Ny0xLjY3NCAxLjg1OC0uOTMgMy41My4zNzIuNzQzLjkzIDEuMyAxLjY3NSAxLjg1OCAxLjQ4OS45MyA0LjI4IDEuNjczIDYuNyAxLjY3My45MyAwIDEuODYgMCAyLjYwNS0uMzcyIDIuNjA2LS41NTcgNS4zOTctMi43ODcgOC4zNzUtNS4yMDMgMi40Mi0xLjg1OCA1Ljc3LTQuMjc0IDguMTg4LTUuMDE3Ljc0NS0uMTg2IDEuNjc1LS4zNzIgMi4yMzQtLjM3MmguNTU4YzEuNjc1LjE4NiAzLjM1Ljc0NCA2LjMyOCAyLjk3MyA1LjIxIDMuOTAzIDI4LjI4NyAyNC4xNTcgMjguNDczIDI0LjM0MyAwIDAgMS40ODkgMS4zIDEuMzAzIDMuMzQ0IDAgMS4xMTUtLjc0NCAyLjIzLTEuODYxIDIuOTc0LS45My41NTctMi4wNDcuOTI5LTIuOTc4LjkyOS0xLjQ4OCAwLTIuNjA1LS43NDQtMi42MDUtLjc0NHMtOC4wMDItNy4yNDctMTAuOTgtOS42NjJjLS4zNzItLjM3Mi0uOTMtLjc0NC0xLjMwMy0uNzQ0LS4xODYgMC0uMzcyLjE4Ni0uNTU4LjM3Mi0uMzcyLjU1NyAwIDEuMy43NDQgMS44NThsOS4zMDUgOS4yOTFzMS4xMTcgMS4xMTUgMS4zMDMgMi40MTZjMCAxLjQ4Ni0uNzQ0IDIuNzg3LTIuMjMzIDMuOTAyLTEuMTE3Ljc0My0yLjIzMyAxLjExNS0zLjM1IDEuMTE1LTEuNDg5IDAtMi40Mi0uNTU3LTIuNjA1LS43NDNsLTEuMzAzLTEuMzAxYy0yLjQyLTIuNDE2LTQuODM5LTQuODMxLTYuNy02LjMxOC0uMzcyLS4zNzEtLjkzLS43NDMtMS4zMDMtLjc0My0uMTg2IDAtLjM3MiAwLS41NTguMTg2LS4xODYuMTg2LS4zNzIuNzQzLjE4NiAxLjNhMi4zIDIuMyAwIDAgMCAuMzcyLjU1OGw2LjcgNy42MThzMS4zMDMgMS42NzMuMTg2IDMuMTZsLS4xODYuMzctLjU1OC41NThjLTEuMTE3LjkzLTIuNjA2IDEuMTE1LTMuMzUgMS4xMTVoLS45M2MtLjc0NS0uMTg2LTEuMTE3LS4zNzEtMS4zMDMtLjU1Ny0uMzczLS4zNzItMy43MjItMy45MDItNi41MTQtNi4xMzItLjM3Mi0uMzcyLS43NDQtLjc0My0xLjMwMy0uNzQzLS4xODYgMC0uMzcyIDAtLjU1OC4xODUtLjU1OC41NTguMzcyIDEuNDg3LjU1OCAxLjg1OWw1Ljc3IDYuMzE3czAgLjE4Ni0uMTg2LjM3MmMtLjE4Ny4zNzItLjkzMS45My0yLjk3OCAxLjNoLS43NDVjLTIuMjMzIDAtNC40NjYtMS4xMTQtNS41ODMtMS42NzIuNTU5LTEuMTE1Ljc0NS0yLjQxNS43NDUtMy43MTYgMC00LjY0NS0zLjkwOC04LjU0OC04LjU2MS04LjU0OGgtLjM3MmMuMTg2LTIuMjMtLjE4Ni02LjMxNy00LjI4LTcuOTktMS4xMTctLjU1Ny0yLjQyLS43NDMtMy41MzctLjc0My0uOTMgMC0xLjg2LjE4Ni0yLjYwNS41NTctLjkzLTEuNjcyLTIuMjMzLTIuOTczLTQuMjgtMy41My0xLjExNy0uMzcyLTIuMDQ4LS41NTgtMy4xNjQtLjU1OC0xLjY3NSAwLTMuMzUuNTU4LTQuODM5IDEuNDg3LTEuMzAzLTEuNjcyLTMuNTM2LTIuNzg3LTUuNTgzLTIuNzg3LTEuODYxIDAtMy43MjIuNzQzLTUuMjExIDIuMDQ0LTEuODYxLTEuMzAxLTguOTMzLTUuOTQ3LTI3LjkxNi0xMC4yMi0uOTMtLjE4Ni0yLjk3Ny0uNzQ0LTQuMjgtMS4xMTUtLjE4NiAxLjExNS0uMzcyIDIuMDQ0LS41NTggMy4xNTkgMCAwIDMuNTM2LjkyOSA0LjI4LjkyOSAxOS4zNTUgNC4yNzQgMjUuODY4IDguNzMzIDI2Ljk4NSA5LjY2MmE3LjQ0NiA3LjQ0NiAwIDAgMC0uNTU4IDIuNzg3YzAgNC4wODkgMy4zNSA3LjI0NyA3LjI1OCA3LjI0Ny4zNzIgMCAuOTMgMCAxLjMwMy0uMTg1LjU1OCAyLjk3MyAyLjYwNSA1LjIwMyA1LjM5NyA2LjMxNy45My4zNzIgMS42NzUuNTU4IDIuNjA1LjU1OC41NTggMCAxLjExNyAwIDEuNjc1LS4xODYuNTU4IDEuMyAxLjg2MSAzLjE1OSA0LjQ2NiA0LjI3NC45MzEuMzcyIDEuODYxLjU1NyAyLjc5Mi41NTcuNzQ1IDAgMS40ODktLjE4NSAyLjIzMy0uMzcxIDEuMzAzIDMuMTU5IDQuNDY3IDUuMzg5IDguMDAzIDUuMzg5IDIuMjMzIDAgNC40NjYtLjkzIDYuMTQxLTIuNjAyIDEuMzAzLjc0MyA0LjI4IDIuMjMgNy4yNTggMi4yM2gxLjExN2MyLjk3OC0uMzcyIDQuMjgtMS40ODcgNC44MzktMi40MTYuMTg2LS4xODYuMTg2LS4zNzEuMzcyLS41NTcuNzQ0LjE4NiAxLjQ4OS4zNzEgMi4yMzMuMzcxIDEuNjc1IDAgMy4xNjQtLjU1NyA0LjY1My0xLjY3MiAxLjQ4OS0xLjExNSAyLjYwNS0yLjYwMSAyLjc5MS00LjA4OC41NTkuMTg2IDEuMTE3LjE4NiAxLjQ4OS4xODYgMS42NzUgMCAzLjM1LS41NTggNC44MzktMS40ODcgMi45NzctMi4wNDQgMy41MzYtNC40NiAzLjUzNi02LjEzMi41NTguMTg2IDEuMTE2LjE4NiAxLjY3NS4xODYgMS40ODkgMCAyLjk3Ny0uNTU3IDQuNDY2LTEuM2E2LjQ5IDYuNDkgMCAwIDAgMy4xNjQtNS4wMThjLjE4Ni0xLjQ4Ni0uMTg2LTIuNzg3LS45MzEtNC4wODggNS4wMjUtMi4yMyAxNi4zNzgtNi4zMTggMjkuOTYzLTkuMjkgMC0xLjExNi0uMTg2LTIuMDQ1LS4zNzItMy4xNi0xNi4xOTEgMi45NzQtMjguMjg4IDguMTc2LTMxLjQ1MiA5LjQ3N1pNNjkuNDE3IDgwLjI0NGMtMy4xNjQgMC01Ljc3LTIuNDE1LTUuOTU2LTUuNTc0IDAtLjE4NiAwLS45My0uNTU4LS45My0uMTg2IDAtLjM3Mi4xODctLjc0NC4zNzItLjc0NS41NTgtMS42NzUgMS4zMDEtMi43OTIgMS4zMDEtLjU1OCAwLTEuMzAyLS4xODYtMS44Ni0uMzcxLTMuMzUtMS4zMDEtMy4zNS0zLjcxNy0zLjE2NS00LjY0NiAwLS4xODYgMC0uNTU3LS4xODYtLjc0M2wtLjE4Ni0uMTg2aC0uMTg2Yy0uMTg2IDAtLjM3MiAwLS41NTguMTg2LTEuMTE3Ljc0My0yLjA0NyAxLjExNS0yLjk3OCAxLjExNS0uNTU4IDAtMS4xMTYtLjE4Ni0xLjY3NS0uMzcyLTQuNDY2LTEuNjcyLTQuMDk0LTUuOTQ2LTMuOTA4LTcuMDYxIDAtLjE4NiAwLS4zNzItLjE4Ni0uNTU3bC0uMzcyLS4xODYtLjM3My4zNzFjLS45My43NDQtMi4wNDcgMS4zMDEtMy4xNjMgMS4zMDEtMi42MDYgMC00LjY1My0yLjA0NC00LjY1My00LjY0NSAwLTIuNjAyIDIuMDQ3LTQuNjQ2IDQuNjUzLTQuNjQ2IDIuMjMzIDAgNC4yOCAxLjY3MiA0LjQ2NiAzLjkwMmwuMTg2IDEuMzAxLjc0NS0xLjExNWMwLS4xODYgMS44Ni0yLjk3MyA1LjM5Ny0yLjk3My41NTggMCAxLjMwMi4xODYgMi4wNDcuMzcyIDIuNzkxLjc0MyAzLjE2NCAzLjM0NCAzLjE2NCA0LjI3MyAwIC41NTguNTU4LjU1OC41NTguNTU4LjE4NiAwIC4zNzItLjE4Ni41NTgtLjE4Ni41NTktLjU1NyAxLjY3NS0xLjQ4NiAzLjM1LTEuNDg2Ljc0NSAwIDEuNjc1LjE4NSAyLjYwNi41NTcgNC4yOCAxLjg1OCAyLjQxOSA3LjI0NyAyLjQxOSA3LjQzMy0uMzcyLjkyOS0uMzcyIDEuMyAwIDEuNDg2aC4zNzJjLjE4NiAwIC4zNzIgMCAuNzQ1LS4xODYuNTU4LS4xODUgMS40ODktLjU1NyAyLjIzMy0uNTU3IDMuMTY0IDAgNS45NTUgMi42MDIgNS45NTUgNS45NDYgMCAzLjM0NS0yLjYwNSA1Ljk0Ni01Ljk1NSA1Ljk0NloiLz48L3N2Zz4=" alt="" style="width:26px;height:auto;">
       Pagar con Mercado Pago
     </button>
-    <p style="font-size:11.5px;color:var(--ink-soft);margin-top:10px;text-align:center;">Pago simulado en esta demo. Ver guía de conexión real a Mercado Pago.</p>
+    <p style="font-size:11.5px;color:var(--ink-soft);margin-top:10px;text-align:center;">Pagás en Mercado Pago. Al confirmarse el pago volvés acá y descargás tu PDF al instante.</p>
   </div>
 </div>
 
@@ -549,6 +565,16 @@
   </div>
 </div>
 
+<div class="admin-modal" id="orderModal">
+  <div class="admin-panel">
+    <div class="admin-head">
+      <h3 id="orderTitle">Tu compra</h3>
+      <button class="close-x" id="closeOrder">✕</button>
+    </div>
+    <div class="admin-body" id="orderBody"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -561,6 +587,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 const SUPABASE_URL = 'https://hfxduchpixftimmhbqdm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_rE1QCRUlF4FAJph_UhDR8w_7v4PnjRH';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const FN_URL = SUPABASE_URL + '/functions/v1';
 
 // Libro semilla: se inserta una única vez si la tabla está vacía.
 const SEED_BOOKS = [
@@ -576,7 +603,7 @@ const SEED_BOOKS = [
 const CART_KEY = 'ec_cart_v1';
 
 let books = [];
-let cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
+let cart = (JSON.parse(localStorage.getItem(CART_KEY) || '[]') || []).map(c => ({ id: c.id, qty: 1 }));
 let activeFilter = 'Todas';
 let currentSession = null;
 
@@ -585,7 +612,7 @@ function initials(title){
   return title.split(' ').filter(w=>w.length>2).slice(0,2).map(w=>w[0]).join('').toUpperCase() || title[0];
 }
 // Adaptador: la base usa "cover_url", el front usa "cover" para no reescribir toda la UI.
-function mapRow(r){ return { id: r.id, title: r.title, category: r.category, price: r.price, review: r.review, cover: r.cover_url || '' }; }
+function mapRow(r){ return { id: r.id, title: r.title, category: r.category, price: r.price, review: r.review, cover: r.cover_url || '', pdf_path: r.pdf_path || '' }; }
 
 async function loadBooksFromDB(){
   const { data, error } = await sb.from('books').select('*').order('created_at', { ascending: true });
@@ -632,12 +659,14 @@ function renderCatalog(){
         <p class="review">${b.review}</p>
         <div class="book-footer">
           <span class="price">${fmt(b.price)}</span>
-          <button class="add-btn" data-id="${b.id}">＋ Añadir</button>
+          ${b.pdf_path
+            ? `<button class="add-btn" data-id="${b.id}">＋ Añadir</button>`
+            : `<button class="add-btn" disabled>Próximamente</button>`}
         </div>
       </div>
     </article>
   `).join('');
-  grid.querySelectorAll('.add-btn').forEach(btn=>{
+  grid.querySelectorAll('.add-btn[data-id]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       addToCart(btn.dataset.id);
       btn.textContent = 'Añadido ✓';
@@ -650,8 +679,8 @@ function renderCatalog(){
 /* ---------- CART ---------- */
 function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); renderCartCount(); }
 function addToCart(id){
-  const existing = cart.find(c=>c.id===id);
-  if(existing){ existing.qty += 1; } else { cart.push({id, qty:1}); }
+  if(cart.find(c=>c.id===id)){ showToast('Ese libro ya está en tu carrito'); return; }
+  cart.push({id, qty:1});
   saveCart();
   showToast('Libro añadido al carrito');
 }
@@ -676,14 +705,14 @@ function renderCart(){
   wrap.innerHTML = cart.map(c=>{
     const b = books.find(x=>x.id===c.id);
     if(!b) return '';
-    total += b.price * c.qty;
+    total += Number(b.price);
     return `
       <div class="cart-item">
         <div class="mini-cover">${b.cover ? `<img src="${b.cover}" style="width:100%;height:100%;object-fit:contain;">` : initials(b.title)}</div>
         <div class="cart-item-info">
           <h5>${b.title}</h5>
           <div class="row">
-            <span>${fmt(b.price)} × ${c.qty}</span>
+            <span>${fmt(b.price)}</span>
             <button class="remove-link" data-id="${c.id}">Quitar</button>
           </div>
         </div>
@@ -714,9 +743,146 @@ function closeCart(){
   document.getElementById('cartDrawer').classList.remove('open');
   document.getElementById('overlay').classList.remove('show');
 }
-document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-  showToast('Demo: acá se conecta Mercado Pago Checkout Pro');
+/* ---------- CHECKOUT (Mercado Pago) ---------- */
+const EMAIL_KEY = 'ec_email_v1';
+const cartEmailEl = document.getElementById('cartEmail');
+cartEmailEl.value = localStorage.getItem(EMAIL_KEY) || '';
+
+function cartError(msg){
+  const el = document.getElementById('cartError');
+  el.textContent = msg || '';
+  el.style.display = msg ? 'block' : 'none';
+}
+
+document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
+  const btn = document.getElementById('checkoutBtn');
+  cartError('');
+  // Sacamos del carrito libros que ya no existen en el catálogo.
+  const valid = cart.filter(c => books.some(b => b.id === c.id));
+  if(valid.length !== cart.length){ cart = valid; saveCart(); renderCart(); }
+  if(!cart.length){ cartError('Tu carrito está vacío.'); return; }
+  const email = cartEmailEl.value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ cartError('Ingresá un email válido.'); cartEmailEl.focus(); return; }
+  localStorage.setItem(EMAIL_KEY, email);
+
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.textContent = 'Redirigiendo a Mercado Pago…';
+  try{
+    const res = await fetch(FN_URL + '/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+      body: JSON.stringify({ email, items: cart.map(c => ({ id: c.id })) })
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok || !data.init_point){
+      throw new Error(data.error || 'No pudimos iniciar el pago. Probá de nuevo.');
+    }
+    window.location.href = data.init_point;
+  }catch(err){
+    console.error('Checkout error:', err);
+    cartError(err.message || 'No pudimos iniciar el pago. Probá de nuevo.');
+    btn.disabled = false;
+    btn.innerHTML = original;
+  }
 });
+
+/* ---------- VUELTA DE MERCADO PAGO / DESCARGAS ---------- */
+const orderModal = document.getElementById('orderModal');
+const orderBody = document.getElementById('orderBody');
+const orderTitle = document.getElementById('orderTitle');
+document.getElementById('closeOrder').addEventListener('click', ()=> orderModal.classList.remove('show'));
+
+function esc(s){ return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
+function showOrder(title, html){
+  orderTitle.textContent = title;
+  orderBody.innerHTML = html;
+  orderModal.classList.add('show');
+}
+
+async function fetchDownloads(orderId, token){
+  const res = await fetch(FN_URL + '/get-download', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+    body: JSON.stringify({ order_id: orderId, token })
+  });
+  const data = await res.json().catch(()=>({}));
+  return { ok: res.ok, status: res.status, data };
+}
+
+function renderApproved(data, orderId, token){
+  const items = data.items || [];
+  const mins = Math.round((data.expires_in || 600) / 60);
+  showOrder('¡Pago confirmado!', `
+    <p class="order-msg">Gracias por tu compra. Descargá tus libros desde acá:</p>
+    <div class="dl-list">
+      ${items.map(i => i.url
+        ? `<a class="dl-link" href="${esc(i.url)}" download><strong>${esc(i.title)}</strong><span class="go">Descargar PDF ↓</span></a>`
+        : `<div class="dl-link dl-off"><strong>${esc(i.title)}</strong><span>No disponible, escribinos</span></div>`
+      ).join('')}
+    </div>
+    <div class="admin-note">Estos links vencen a los ${mins} minutos. <strong>Guardá esta página en favoritos</strong>: cada vez que la abras te generamos links nuevos.</div>
+    <button class="btn btn-ghost" id="refreshLinks" style="margin-top:6px;">Generar links nuevos</button>
+  `);
+  document.getElementById('refreshLinks').addEventListener('click', ()=> handleReturn(true));
+}
+
+async function handleReturn(silent){
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('order');
+  const token = params.get('t');
+  const r = params.get('r');
+  if(!orderId || !token) return;
+
+  if(r === 'failure'){
+    showOrder('El pago no se completó', `<p class="order-msg">No se realizó ningún cobro. Podés volver al carrito e intentar de nuevo o con otro medio de pago.</p>
+      <button class="btn btn-primary" id="closeFail">Volver al sitio</button>`);
+    document.getElementById('closeFail').addEventListener('click', ()=>{
+      orderModal.classList.remove('show');
+      history.replaceState(null, '', window.location.pathname);
+    });
+    return;
+  }
+
+  if(!silent) showOrder('Confirmando tu pago…', '<p class="order-msg">Estamos verificando el pago con Mercado Pago. Puede tardar unos segundos, no cierres esta página.</p>');
+
+  const MAX_TRIES = 30;            // ~90 segundos
+  for(let i = 0; i < MAX_TRIES; i++){
+    let out;
+    try{ out = await fetchDownloads(orderId, token); }
+    catch(e){ out = { ok:false, status:0, data:{} }; }
+
+    if(out.status === 404){
+      showOrder('Pedido no encontrado', '<p class="order-msg">No encontramos este pedido. Si pagaste, escribinos y lo resolvemos.</p>');
+      return;
+    }
+    if(out.ok && out.data.status === 'approved'){
+      cart = []; saveCart(); renderCart();
+      renderApproved(out.data, orderId, token);
+      return;
+    }
+    if(out.ok){
+      const st = out.data.status;
+      if(st === 'rejected'){
+        showOrder('Pago rechazado', '<p class="order-msg">Mercado Pago rechazó el pago. No se te cobró. Podés intentar de nuevo con otro medio de pago.</p>');
+        return;
+      }
+      if(st === 'refunded'){
+        showOrder('Pago reembolsado', '<p class="order-msg">Este pago fue reembolsado, por eso las descargas ya no están disponibles.</p>');
+        return;
+      }
+      if(st === 'amount_mismatch' || st === 'error'){
+        showOrder('Necesitamos revisar tu compra', '<p class="order-msg">Hubo un problema al confirmar tu pedido. Escribinos con tu comprobante de Mercado Pago y te lo resolvemos enseguida.</p>');
+        return;
+      }
+    }
+    await new Promise(res => setTimeout(res, 3000));
+  }
+  showOrder('Tu pago está en proceso', `<p class="order-msg">Todavía no recibimos la confirmación de Mercado Pago. Apenas se acredite, tus descargas van a estar disponibles en esta misma página.</p>
+    <button class="btn btn-primary" id="retryOrder">Reintentar</button>`);
+  document.getElementById('retryOrder').addEventListener('click', ()=> handleReturn(false));
+}
 
 /* ---------- ADMIN (Supabase Auth real) ---------- */
 const adminModal = document.getElementById('adminModal');
@@ -800,7 +966,7 @@ function renderAdminList(){
   body.innerHTML = `<div class="book-list-admin">` + books.map(b=>`
     <div class="book-row-admin">
       <div class="mini-cover">${b.cover ? `<img src="${b.cover}" style="width:100%;height:100%;object-fit:contain;">` : initials(b.title)}</div>
-      <div class="brinfo"><strong>${b.title}</strong><span>${b.category} · ${fmt(b.price)}</span></div>
+      <div class="brinfo"><strong>${b.title}${b.pdf_path ? '' : '<span class="badge-nopdf">Sin PDF</span>'}</strong><span>${b.category} · ${fmt(b.price)}</span></div>
       <div class="row-actions">
         <button data-edit="${b.id}">Editar</button>
         <button data-del="${b.id}">Eliminar</button>
@@ -840,6 +1006,10 @@ function renderAdminForm(){
         <input type="hidden" id="fCover" value="${editing?editing.cover:''}">
         <small id="uploadStatus" style="color:var(--ink-soft);"></small>
       </div>
+      <div class="field"><label>Archivo PDF del libro (el que se entrega al comprador)</label><input type="file" id="fPdfFile" accept="application/pdf,.pdf">
+        <input type="hidden" id="fPdf" value="${editing?editing.pdf_path:''}">
+        <small id="pdfStatus" style="color:var(--ink-soft);">${editing && editing.pdf_path ? 'PDF cargado ✓ (subí otro solo si querés reemplazarlo)' : 'Sin PDF: el libro no se puede comprar hasta cargarlo.'}</small>
+      </div>
       <div style="display:flex;gap:10px;">
         <button class="btn btn-primary" type="submit">${editing?'Guardar cambios':'Publicar libro'}</button>
         ${editing?'<button type="button" class="btn btn-ghost" id="cancelEdit">Cancelar</button>':''}
@@ -870,18 +1040,40 @@ function renderAdminForm(){
     document.getElementById('fCover').value = data.publicUrl;
     status.textContent = 'Portada subida ✓';
   });
+  const pdfInput = document.getElementById('fPdfFile');
+  pdfInput.addEventListener('change', async ()=>{
+    const file = pdfInput.files[0];
+    if(!file) return;
+    const status = document.getElementById('pdfStatus');
+    if(file.type !== 'application/pdf' && !/\.pdf$/i.test(file.name)){ status.textContent = 'El archivo tiene que ser un PDF.'; pdfInput.value=''; return; }
+    uploading = true;
+    submitBtn.disabled = true;
+    status.textContent = 'Subiendo PDF… (puede tardar según el tamaño)';
+    const path = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g,'_')}`;
+    const { error } = await sb.storage.from('pdfs').upload(path, file, { contentType: 'application/pdf', upsert: false });
+    uploading = false;
+    submitBtn.disabled = false;
+    if(error){
+      console.error('Error subiendo PDF:', error);
+      status.textContent = 'Error al subir el PDF: ' + error.message;
+      return;
+    }
+    document.getElementById('fPdf').value = path;
+    status.textContent = 'PDF subido ✓';
+  });
   if(editing){
     document.getElementById('cancelEdit').addEventListener('click', ()=>{ editingId=null; adminTab='list'; renderAdminPanel(); });
   }
   document.getElementById('bookForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
-    if(uploading){ showToast('Esperá a que termine de subir la portada'); return; }
+    if(uploading){ showToast('Esperá a que termine de subir el archivo'); return; }
     const payload = {
       title: document.getElementById('fTitle').value.trim(),
       category: document.getElementById('fCategory').value.trim(),
       price: Number(document.getElementById('fPrice').value),
       review: document.getElementById('fReview').value.trim(),
-      cover_url: document.getElementById('fCover').value
+      cover_url: document.getElementById('fCover').value,
+      pdf_path: document.getElementById('fPdf').value || null
     };
     let error;
     if(editing){
@@ -913,6 +1105,7 @@ document.getElementById('burgerBtn').addEventListener('click', ()=>{
   renderFilters();
   renderCatalog();
   renderCartCount();
+  handleReturn(false);
 })();
 </script>
 </body>
