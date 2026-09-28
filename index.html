@@ -151,12 +151,13 @@
     overflow:hidden;
   }
   .book-cover{
-    aspect-ratio:3/4;background:
+    background:
       linear-gradient(160deg, var(--quartz-2), var(--quartz));
     display:flex;align-items:center;justify-content:center;
     position:relative;overflow:hidden;border-bottom:1px solid var(--line);
   }
-  .book-cover img{width:100%;height:100%;object-fit:cover;}
+  .book-cover:not(:has(img)){aspect-ratio:3/4;}
+  .book-cover img{width:100%;height:auto;display:block;}
   .book-cover .cover-placeholder{
     text-align:center;color:var(--ink-soft);padding:20px;
   }
@@ -674,7 +675,7 @@ function renderCart(){
     total += b.price * c.qty;
     return `
       <div class="cart-item">
-        <div class="mini-cover">${b.cover ? `<img src="${b.cover}" style="width:100%;height:100%;object-fit:cover;">` : initials(b.title)}</div>
+        <div class="mini-cover">${b.cover ? `<img src="${b.cover}" style="width:100%;height:100%;object-fit:contain;">` : initials(b.title)}</div>
         <div class="cart-item-info">
           <h5>${b.title}</h5>
           <div class="row">
@@ -794,7 +795,7 @@ function renderAdminList(){
   }
   body.innerHTML = `<div class="book-list-admin">` + books.map(b=>`
     <div class="book-row-admin">
-      <div class="mini-cover">${b.cover ? `<img src="${b.cover}" style="width:100%;height:100%;object-fit:cover;">` : initials(b.title)}</div>
+      <div class="mini-cover">${b.cover ? `<img src="${b.cover}" style="width:100%;height:100%;object-fit:contain;">` : initials(b.title)}</div>
       <div class="brinfo"><strong>${b.title}</strong><span>${b.category} · ${fmt(b.price)}</span></div>
       <div class="row-actions">
         <button data-edit="${b.id}">Editar</button>
