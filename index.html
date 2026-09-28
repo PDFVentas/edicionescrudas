@@ -398,6 +398,26 @@
   .dl-off{opacity:.65;}
   .badge-nopdf{display:inline-block;margin-left:8px;font-size:11px;color:#a13f3f;border:1px solid #a13f3f;padding:1px 6px;border-radius:999px;}
   .add-btn[disabled]{opacity:.55;cursor:not-allowed;}
+
+  /* ---------- TÉRMINOS / FACTURACIONES ---------- */
+  .terms-row{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--ink-soft);margin:0 0 12px;line-height:1.45;}
+  .terms-row input{margin-top:3px;flex-shrink:0;}
+  .terms-row a{color:var(--ink);text-decoration:underline;}
+  .legal h1{font-size:34px;font-weight:500;margin:0 0 6px;}
+  .legal h3{font-size:18px;font-weight:500;margin:30px 0 8px;}
+  .legal p,.legal li{font-size:15px;line-height:1.7;color:var(--ink-soft);}
+  .legal mark{background:#f6e7b4;padding:0 4px;}
+  .legal .back{display:inline-block;margin-bottom:24px;font-size:14px;color:var(--ink);}
+  .bill-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .bill-filters select,.bill-filters input{padding:9px 10px;border:1px solid var(--line);background:var(--white);font:inherit;font-size:13px;}
+  .bill-row{cursor:pointer;}
+  .bill-row:hover{background:var(--quartz-2);}
+  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-soft);}
+  .pill.ok{border-color:#3f8a5a;color:#3f8a5a;}
+  .pill.warn{border-color:#b7791f;color:#b7791f;}
+  .bill-detail{width:100%;border-collapse:collapse;margin-bottom:22px;font-size:14px;}
+  .bill-detail td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .bill-detail td:first-child{color:var(--ink-soft);width:38%;}
 </style>
 </head>
 <body>
@@ -428,6 +448,42 @@
 </header>
 
 <div id="top"></div>
+
+<section class="section" id="terminos-page" style="display:none;">
+  <div class="wrap legal" style="max-width:820px;">
+    <a class="back" href="#catalogo">← Volver al sitio</a>
+    <h1>Términos y Condiciones</h1>
+    <p>Versión <span id="termsVersionLabel"></span>. Al comprar en este sitio aceptás estos términos.</p>
+
+    <h3>1. Qué vendemos</h3>
+    <p>Vendemos libros en formato digital (archivos PDF). No se envía ningún producto físico. La compra te da una licencia de uso personal del archivo.</p>
+
+    <h3>2. Precios y medios de pago</h3>
+    <p>Los precios están expresados en pesos argentinos (ARS). Los pagos se procesan a través de Mercado Pago, con los medios de pago que esa plataforma habilite en cada momento. No almacenamos los datos de tu tarjeta. Una compra se considera realizada cuando Mercado Pago confirma la acreditación del pago.</p>
+
+    <h3>3. Entrega</h3>
+    <p>Al confirmarse el pago, podés descargar el archivo de inmediato desde la pantalla de confirmación, y además te enviamos un correo con un enlace para volver a descargarlo. Por seguridad, los enlaces directos de descarga vencen a los pocos minutos, pero podés generar nuevos cuando quieras desde el enlace de tu correo.</p>
+    <p>El correo electrónico que ingreses al comprar es el medio de entrega y contacto: revisalo con atención antes de pagar. Si no te llega el correo, revisá la carpeta de spam y, si sigue sin aparecer, escribinos.</p>
+
+    <h3>4. Propiedad intelectual y uso permitido</h3>
+    <p>Las obras están protegidas por la Ley 11.723 de Propiedad Intelectual. Está prohibido copiar, revender, compartir públicamente o distribuir los archivos, total o parcialmente, sin autorización escrita del titular. Podés guardar el archivo y usarlo en tus propios dispositivos.</p>
+
+    <h3>5. Política de reembolsos</h3>
+    <p>Por tratarse de contenido digital que se entrega y puede descargarse de forma inmediata, <strong>una vez confirmado el pago no se realizan reembolsos ni devoluciones</strong>. Esta política no limita los derechos que la legislación vigente reconoce de manera irrenunciable a los consumidores, ni nuestra obligación de resolver los casos en que el archivo no se entregue o llegue defectuoso.</p>
+
+    <h3>6. Problemas con tu compra</h3>
+    <p>Si el archivo no se descarga, está dañado o no recibiste el correo, escribinos a edicionescrudas@gmail.com indicando el correo con el que compraste. Lo resolvemos re-entregando el archivo.</p>
+
+    <h3>7. Datos personales</h3>
+    <p>Usamos tu correo electrónico únicamente para entregarte tu compra y gestionar consultas o reclamos. No lo cedemos a terceros salvo a los proveedores necesarios para operar el sitio (procesamiento de pagos y envío de correo). Podés solicitar el acceso, la rectificación o la supresión de tus datos escribiendo a edicionescrudas@gmail.com. La Agencia de Acceso a la Información Pública, en su carácter de Órgano de Control de la Ley 25.326, tiene la atribución de atender las denuncias y reclamos que se interpongan con relación al incumplimiento de las normas sobre protección de datos personales.</p>
+
+    <h3>8. Modificaciones</h3>
+    <p>Podemos actualizar estos términos. Se aplica la versión vigente al momento de tu compra, y guardamos registro de la versión que aceptaste.</p>
+
+    <h3>9. Ley aplicable y reclamos</h3>
+    <p>Estos términos se rigen por las leyes de la República Argentina. Sin perjuicio de ello, podés presentar tus reclamos ante la Dirección de Defensa del Consumidor de tu jurisdicción.</p>
+  </div>
+</section>
 
 <section class="hero">
   <div class="wrap">
@@ -531,6 +587,7 @@
   <div class="rule"></div>
   <div class="logo-word" style="margin-bottom:10px;">Ediciones <em>Crudas</em></div>
   <p>© <span id="year"></span> Ediciones Crudas. Todos los derechos reservados.</p>
+  <p><a href="#terminos" style="color:inherit;text-decoration:underline;">Términos y Condiciones</a></p>
 </footer>
 
 <!-- CART -->
@@ -545,6 +602,7 @@
     <div class="cart-total-row"><span>Total</span><strong id="cartTotal">$0</strong></div>
     <input type="email" id="cartEmail" class="cart-email" placeholder="Tu email (ahí te enviamos el link de descarga)" autocomplete="email" inputmode="email" required>
     <input type="email" id="cartEmail2" class="cart-email" placeholder="Repetí tu email" autocomplete="off" inputmode="email" required>
+    <label class="terms-row"><input type="checkbox" id="cartTerms"><span>Leí y acepto los <a href="#terminos" target="_blank" rel="noopener">Términos y Condiciones</a>, incluida la política de no reembolsos (contenido digital de entrega inmediata).</span></label>
     <div class="cart-error" id="cartError"></div>
     <button class="btn btn-primary" style="width:100%;justify-content:center;gap:10px;" id="checkoutBtn">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTA0IiBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgMTUwIDEwNCI+PHBhdGggZmlsbD0iIzBBMDA4MCIgZD0iTTE1MCA0OS4wMjdjMC0yNi45NDQtMzMuNjg1LTQ4Ljg3LTc1LTQ4Ljg3LTQxLjUwMSAwLTc1IDIxLjkyNi03NSA0OC44N3YyLjc4N2MwIDI4LjYxNiAyOS40MDQgNTEuODQzIDc1IDUxLjg0MyA0NS45NjggMCA3NS0yMy4yMjcgNzUtNTEuODQzdi0yLjc4N1oiLz48cGF0aCBmaWxsPSIjMkFCQ0ZGIiBkPSJNMTQ3LjAyMiA0OS4wMjdjMCAyNS40NTctMzIuMTk2IDQ2LjA4My03Mi4wMjIgNDYuMDgzLTM5LjgyNiAwLTcyLjAyMi0yMC42MjYtNzIuMDIyLTQ2LjA4M0MyLjk3OCAyMy41NyAzNS4xNzQgMi45NDQgNzUgMi45NDRjMzkuODI2LjE4NiA3Mi4wMjIgMjAuNjI2IDcyLjAyMiA0Ni4wODNaIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTUwLjk5MyAzNC41MzNzLS43NDUuNzQzLS4zNzMgMS40ODdjMS4xMTcgMS40ODYgNC42NTMgMi4yMyA4LjE4OSAxLjQ4NiAyLjA0Ny0uNTU3IDQuODM5LTIuNjAxIDcuNDQ0LTQuNjQ1IDIuNzkyLTIuMjMgNS41ODMtNC40NiA4LjU2LTUuMzg5IDIuOTc5LS45MyA0Ljg0LS41NTggNi4xNDItLjE4NiAxLjQ5LjM3MiAyLjk3OCAxLjMgNS41ODQgMy4zNDUgNS4wMjQgMy43MTYgMjQuNzUxIDIwLjk5NyAyOC4xMDEgMjMuOTcgMi43OTItMS4zIDE1LjA3NS02LjUwMyAzMS42MzgtMTAuMjItMS4xMTctOC45MTktNi41MTQtMTcuMDk1LTE0LjcwMi0yMy43ODQtMTEuMzUzIDQuODMxLTI1LjMxIDcuMjQ3LTM5LjA4Mi41NTcgMCAwLTcuNDQ0LTMuNTMtMTQuNzAyLTMuMzQ1LTEwLjc5NC4xODYtMTUuNDQ3IDUuMDE3LTIwLjQ3MiA5Ljg0OWwtNi4zMjcgNi44NzVaIi8+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTExNC4wODIgNTYuMjc0Yy0uMTg2LS4xODYtMjMuMjYzLTIwLjQ0LTI4LjQ3NC0yNC4zNDItMi45NzgtMi4yMy00LjY1My0yLjc4OC02LjUxNC0zLjE2LS45My0uMTg1LTIuMjMzIDAtMy4xNjMuMzcyLTIuNDIuNzQ0LTUuNTg0IDIuNzg4LTguMzc1IDUuMDE3LTIuOTc4IDIuNDE2LTUuNzcgNC40Ni04LjE4OSA1LjAxNy0zLjE2My45My03LjI1OCAwLTkuMTE5LTEuMTE0LS43NDQtLjU1OC0xLjMwMy0xLjExNS0xLjQ4OS0xLjY3My0uNzQ0LTEuNDg2LjU1OS0yLjc4Ny43NDUtMi45NzNsNi4zMjctNi44NzUgMi4yMzMtMi4yM2MtMi4wNDcuMTg2LTMuOTA4Ljc0My01Ljc2OSAxLjMtMi4yMzMuNTU4LTQuNDY2IDEuMzAyLTYuNyAxLjMwMi0uOTMgMC01Ljk1NS0uNzQ0LTYuODg1LTEuMTE1LTUuNzctMS40ODctMTAuNzk0LTMuMTYtMTguNDI1LTYuNjlDMTEuMTY2IDI1LjggNS4yMTEgMzQuMTYxIDMuNTM2IDQzLjQ1MmMxLjMwMy4zNzIgMy4zNS45MyA0LjI4IDEuMTE1IDIwLjQ3MiA0LjQ2IDI2LjggOS4yOTEgMjguMTAyIDEwLjIyIDEuMzAzLTEuMyAyLjk3OC0yLjIzIDUuMDI1LTIuMjMgMi4yMzMgMCA0LjI4IDEuMTE1IDUuNTgzIDIuOTc0IDEuMTE3LS45MyAyLjc5Mi0xLjY3MyA0LjgzOS0xLjY3My45MyAwIDEuODYuMTg2IDIuOTc3LjU1OGE2LjgzIDYuODMgMCAwIDEgNC4wOTUgMy43MTZjLjc0NC0uMzcyIDEuNjc1LS41NTcgMi43OTEtLjU1NyAxLjExNyAwIDIuMjMzLjE4NSAzLjM1Ljc0MyAzLjcyMiAxLjY3MiA0LjI4IDUuMzg5IDQuMDk0IDguMTc2aC43NDVjNC40NjYgMCA4LjE4OSAzLjcxNiA4LjE4OSA4LjE3NiAwIDEuMy0uMzczIDIuNjAxLS45MzEgMy45MDIgMS4zMDMuNzQzIDQuMjggMi4yMyA3LjA3MiAxLjg1OCAyLjIzMy0uMTg2IDIuOTc4LS45MjkgMy4zNS0xLjQ4Ni4xODYtLjM3Mi4zNzItLjU1OC4xODYtLjkzbC01Ljc3LTYuNTAzcy0uOTMtLjkzLS41NTgtMS4zYy4zNzMtLjM3Mi45My4xODUgMS4zMDMuNTU3IDIuOTc4IDIuNDE1IDYuNTE0IDYuMTMyIDYuNTE0IDYuMTMycy4zNzIuNTU3IDEuNjc1Ljc0M2MxLjExNi4xODYgMy4xNjMgMCA0LjY1Mi0xLjExNS4zNzMtLjM3Mi43NDUtLjc0My45My0xLjExNSAxLjQ5LTEuODU4LS4xODUtMy43MTYtLjE4NS0zLjcxNmwtNi43LTcuNjE5cy0uOTMtLjkyOS0uNTU4LTEuM2MuMzcyLS4zNzIuOTMuMTg1IDEuMzAyLjU1N2EyNTMuMjA2IDI1My4yMDYgMCAwIDEgOC4wMDMgNy42MTljLjU1OC4zNzEgMy4xNjQgMi4wNDQgNi41MTMtLjE4NiAyLjA0OC0xLjMwMSAyLjQyLTIuOTczIDIuNDItNC4yNzQtLjE4Ni0xLjY3Mi0xLjQ4OS0yLjc4Ny0xLjQ4OS0yLjc4N2wtOS4zMDUtOS4yOTFzLS45My0uNzQ0LS41NTgtMS4zMDFjLjM3Mi0uMzcyLjkzLjE4NiAxLjMwMi41NTcgMi45NzggMi40MTYgMTAuOTggOS42NjMgMTAuOTggOS42NjMuMTg2IDAgMi43OTIgMi4wNDQgNi4zMjgtLjE4NiAxLjMwMy0uNzQzIDIuMDQ3LTEuODU4IDIuMDQ3LTMuMzQ1LS4zNzItMi4wNDQtMi4wNDctMy41My0yLjA0Ny0zLjUzWiIvPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik02OS40MTcgNjcuOThjLTEuNDg5IDAtMi45NzguNzQ0LTMuMTY0Ljc0NC0uMTg2IDAgMC0uNTU4LjE4Ni0uOTMuMTg2LS4zNzEgMi4wNDctNS45NDYtMi42MDUtNy45OS0zLjUzNi0xLjQ4Ni01LjU4My4xODYtNi4zMjguOTMtLjE4Ni4xODUtLjM3Mi4xODUtLjM3MiAwIDAtLjkzLS41NTgtMy43MTctMy41MzYtNC42NDYtNC4yOC0xLjMtNy4wNzIgMS42NzItNy44MTYgMi43ODctLjM3My0yLjQxNS0yLjQyLTQuNDYtNS4wMjUtNC40NmE1IDUgMCAwIDAtNS4wMjUgNS4wMTggNSA1IDAgMCAwIDUuMDI1IDUuMDE3YzEuMzAzIDAgMi42MDUtLjU1OCAzLjUzNi0xLjQ4N3YuMTg2Yy0uMTg2IDEuMy0uNTU5IDUuNzYgNC4wOTQgNy42MTkgMS44NjEuNzQzIDMuNTM2LjE4NiA0LjgzOS0uNzQ0LjM3Mi0uMzcxLjM3Mi0uMTg1LjM3Mi4xODYtLjE4NiAxLjExNSAwIDMuNzE3IDMuNTM2IDUuMDE3IDIuNjA1IDEuMTE1IDQuMjggMCA1LjIxLS45MjkuMzczLS4zNzEuNTYtLjM3MS41Ni4zNzIuMTg1IDMuMzQ1IDIuOTc3IDUuOTQ2IDYuMzI3IDUuOTQ2IDMuNTM2IDAgNi4zMjctMi43ODcgNi4zMjctNi4zMTguMTg2LTMuMzQ0LTIuNjA1LTYuMTMyLTYuMTQxLTYuMzE4WiIvPjxwYXRoIGZpbGw9IiMwQTAwODAiIGQ9Ik0xMTUuMDEyIDUzLjg1OGMtNy4wNzItNi4xMzItMjMuNjM1LTIwLjQ0LTI3LjkxNS0yMy43ODUtMi42MDYtMS44NTgtNC4yOC0yLjk3My01Ljc3LTMuMzQ0LS43NDQtLjE4Ni0xLjY3NC0uMzcyLTIuNzkxLS4zNzJzLTIuNDIuMTg2LTMuNTM2LjU1OGMtMi43OTIuOTI5LTUuNzcgMy4xNTgtOC41NiA1LjM4OGwtLjE4Ny4xODZjLTIuNjA1IDIuMDQ0LTUuMjEgNC4wODgtNy4yNTggNC42NDYtLjkzLjE4NS0xLjg2MS4zNzEtMi42MDUuMzcxLTIuMjM0IDAtNC4yOC0uNzQzLTUuMDI1LTEuNjcyLS4xODYtLjE4NiAwLS4zNzIuMTg2LS43NDRsNi4xNDEtNy4wNmM0LjgzOS00LjgzMiA5LjQ5Mi05LjQ3NyAyMC4xLTkuNjYzaC41NThjNi43IDAgMTMuMjEzIDIuOTczIDEzLjk1OCAzLjM0NSA2LjMyNyAyLjk3MyAxMi42NTUgNC40NiAxOS4xNjggNC40NiA2LjcgMCAxMy41ODYtMS42NzMgMjEuMDMtNS4wMTgtLjc0NC0uNzQzLTEuNjc1LTEuMy0yLjYwNS0yLjA0NC02LjMyOCAyLjc4Ny0xMi40NjkgNC4wODgtMTguNDI1IDQuMDg4LTUuOTU1IDAtMTIuMDk2LTEuNDg2LTE3Ljg2Ni00LjI3NC0uMzcyLS4xODYtNy42My0zLjUzLTE1LjI2LTMuNTNoLS41NThjLTguOTMzLjE4Ni0xMy45NTggMy4zNDQtMTcuMzA4IDYuMTMyLTMuMzUgMC02LjE0Mi45MjktOC43NDcgMS42NzItMi4yMzMuNTU4LTQuMjggMS4xMTUtNi4xNDIgMS4xMTVoLTIuMjMzYy0yLjIzMyAwLTEzLjIxMy0yLjc4Ny0yMS45Ni02LjEzMi0uOTMuNTU3LTEuNjc1IDEuMy0yLjYwNSAyLjA0NCA5LjExOSAzLjcxNiAyMC4yODUgNi42OSAyMy44MiA2Ljg3NS45MzEgMCAyLjA0OC4xODYgMi45NzkuMTg2IDIuMjMzIDAgNC42NTItLjU1NyA2Ljg4NS0xLjMgMS4zMDMtLjM3MiAyLjc5Mi0uNzQ0IDQuMjgtMS4xMTZsLTEuMzAyIDEuMzAxLTYuMzI4IDYuODc2Yy0uNTU4LjU1Ny0xLjY3NCAxLjg1OC0uOTMgMy41My4zNzIuNzQzLjkzIDEuMyAxLjY3NSAxLjg1OCAxLjQ4OS45MyA0LjI4IDEuNjczIDYuNyAxLjY3My45MyAwIDEuODYgMCAyLjYwNS0uMzcyIDIuNjA2LS41NTcgNS4zOTctMi43ODcgOC4zNzUtNS4yMDMgMi40Mi0xLjg1OCA1Ljc3LTQuMjc0IDguMTg4LTUuMDE3Ljc0NS0uMTg2IDEuNjc1LS4zNzIgMi4yMzQtLjM3MmguNTU4YzEuNjc1LjE4NiAzLjM1Ljc0NCA2LjMyOCAyLjk3MyA1LjIxIDMuOTAzIDI4LjI4NyAyNC4xNTcgMjguNDczIDI0LjM0MyAwIDAgMS40ODkgMS4zIDEuMzAzIDMuMzQ0IDAgMS4xMTUtLjc0NCAyLjIzLTEuODYxIDIuOTc0LS45My41NTctMi4wNDcuOTI5LTIuOTc4LjkyOS0xLjQ4OCAwLTIuNjA1LS43NDQtMi42MDUtLjc0NHMtOC4wMDItNy4yNDctMTAuOTgtOS42NjJjLS4zNzItLjM3Mi0uOTMtLjc0NC0xLjMwMy0uNzQ0LS4xODYgMC0uMzcyLjE4Ni0uNTU4LjM3Mi0uMzcyLjU1NyAwIDEuMy43NDQgMS44NThsOS4zMDUgOS4yOTFzMS4xMTcgMS4xMTUgMS4zMDMgMi40MTZjMCAxLjQ4Ni0uNzQ0IDIuNzg3LTIuMjMzIDMuOTAyLTEuMTE3Ljc0My0yLjIzMyAxLjExNS0zLjM1IDEuMTE1LTEuNDg5IDAtMi40Mi0uNTU3LTIuNjA1LS43NDNsLTEuMzAzLTEuMzAxYy0yLjQyLTIuNDE2LTQuODM5LTQuODMxLTYuNy02LjMxOC0uMzcyLS4zNzEtLjkzLS43NDMtMS4zMDMtLjc0My0uMTg2IDAtLjM3MiAwLS41NTguMTg2LS4xODYuMTg2LS4zNzIuNzQzLjE4NiAxLjNhMi4zIDIuMyAwIDAgMCAuMzcyLjU1OGw2LjcgNy42MThzMS4zMDMgMS42NzMuMTg2IDMuMTZsLS4xODYuMzctLjU1OC41NThjLTEuMTE3LjkzLTIuNjA2IDEuMTE1LTMuMzUgMS4xMTVoLS45M2MtLjc0NS0uMTg2LTEuMTE3LS4zNzEtMS4zMDMtLjU1Ny0uMzczLS4zNzItMy43MjItMy45MDItNi41MTQtNi4xMzItLjM3Mi0uMzcyLS43NDQtLjc0My0xLjMwMy0uNzQzLS4xODYgMC0uMzcyIDAtLjU1OC4xODUtLjU1OC41NTguMzcyIDEuNDg3LjU1OCAxLjg1OWw1Ljc3IDYuMzE3czAgLjE4Ni0uMTg2LjM3MmMtLjE4Ny4zNzItLjkzMS45My0yLjk3OCAxLjNoLS43NDVjLTIuMjMzIDAtNC40NjYtMS4xMTQtNS41ODMtMS42NzIuNTU5LTEuMTE1Ljc0NS0yLjQxNS43NDUtMy43MTYgMC00LjY0NS0zLjkwOC04LjU0OC04LjU2MS04LjU0OGgtLjM3MmMuMTg2LTIuMjMtLjE4Ni02LjMxNy00LjI4LTcuOTktMS4xMTctLjU1Ny0yLjQyLS43NDMtMy41MzctLjc0My0uOTMgMC0xLjg2LjE4Ni0yLjYwNS41NTctLjkzLTEuNjcyLTIuMjMzLTIuOTczLTQuMjgtMy41My0xLjExNy0uMzcyLTIuMDQ4LS41NTgtMy4xNjQtLjU1OC0xLjY3NSAwLTMuMzUuNTU4LTQuODM5IDEuNDg3LTEuMzAzLTEuNjcyLTMuNTM2LTIuNzg3LTUuNTgzLTIuNzg3LTEuODYxIDAtMy43MjIuNzQzLTUuMjExIDIuMDQ0LTEuODYxLTEuMzAxLTguOTMzLTUuOTQ3LTI3LjkxNi0xMC4yMi0uOTMtLjE4Ni0yLjk3Ny0uNzQ0LTQuMjgtMS4xMTUtLjE4NiAxLjExNS0uMzcyIDIuMDQ0LS41NTggMy4xNTkgMCAwIDMuNTM2LjkyOSA0LjI4LjkyOSAxOS4zNTUgNC4yNzQgMjUuODY4IDguNzMzIDI2Ljk4NSA5LjY2MmE3LjQ0NiA3LjQ0NiAwIDAgMC0uNTU4IDIuNzg3YzAgNC4wODkgMy4zNSA3LjI0NyA3LjI1OCA3LjI0Ny4zNzIgMCAuOTMgMCAxLjMwMy0uMTg1LjU1OCAyLjk3MyAyLjYwNSA1LjIwMyA1LjM5NyA2LjMxNy45My4zNzIgMS42NzUuNTU4IDIuNjA1LjU1OC41NTggMCAxLjExNyAwIDEuNjc1LS4xODYuNTU4IDEuMyAxLjg2MSAzLjE1OSA0LjQ2NiA0LjI3NC45MzEuMzcyIDEuODYxLjU1NyAyLjc5Mi41NTcuNzQ1IDAgMS40ODktLjE4NSAyLjIzMy0uMzcxIDEuMzAzIDMuMTU5IDQuNDY3IDUuMzg5IDguMDAzIDUuMzg5IDIuMjMzIDAgNC40NjYtLjkzIDYuMTQxLTIuNjAyIDEuMzAzLjc0MyA0LjI4IDIuMjMgNy4yNTggMi4yM2gxLjExN2MyLjk3OC0uMzcyIDQuMjgtMS40ODcgNC44MzktMi40MTYuMTg2LS4xODYuMTg2LS4zNzEuMzcyLS41NTcuNzQ0LjE4NiAxLjQ4OS4zNzEgMi4yMzMuMzcxIDEuNjc1IDAgMy4xNjQtLjU1NyA0LjY1My0xLjY3MiAxLjQ4OS0xLjExNSAyLjYwNS0yLjYwMSAyLjc5MS00LjA4OC41NTkuMTg2IDEuMTE3LjE4NiAxLjQ4OS4xODYgMS42NzUgMCAzLjM1LS41NTggNC44MzktMS40ODcgMi45NzctMi4wNDQgMy41MzYtNC40NiAzLjUzNi02LjEzMi41NTguMTg2IDEuMTE2LjE4NiAxLjY3NS4xODYgMS40ODkgMCAyLjk3Ny0uNTU3IDQuNDY2LTEuM2E2LjQ5IDYuNDkgMCAwIDAgMy4xNjQtNS4wMThjLjE4Ni0xLjQ4Ni0uMTg2LTIuNzg3LS45MzEtNC4wODggNS4wMjUtMi4yMyAxNi4zNzgtNi4zMTggMjkuOTYzLTkuMjkgMC0xLjExNi0uMTg2LTIuMDQ1LS4zNzItMy4xNi0xNi4xOTEgMi45NzQtMjguMjg4IDguMTc2LTMxLjQ1MiA5LjQ3N1pNNjkuNDE3IDgwLjI0NGMtMy4xNjQgMC01Ljc3LTIuNDE1LTUuOTU2LTUuNTc0IDAtLjE4NiAwLS45My0uNTU4LS45My0uMTg2IDAtLjM3Mi4xODctLjc0NC4zNzItLjc0NS41NTgtMS42NzUgMS4zMDEtMi43OTIgMS4zMDEtLjU1OCAwLTEuMzAyLS4xODYtMS44Ni0uMzcxLTMuMzUtMS4zMDEtMy4zNS0zLjcxNy0zLjE2NS00LjY0NiAwLS4xODYgMC0uNTU3LS4xODYtLjc0M2wtLjE4Ni0uMTg2aC0uMTg2Yy0uMTg2IDAtLjM3MiAwLS41NTguMTg2LTEuMTE3Ljc0My0yLjA0NyAxLjExNS0yLjk3OCAxLjExNS0uNTU4IDAtMS4xMTYtLjE4Ni0xLjY3NS0uMzcyLTQuNDY2LTEuNjcyLTQuMDk0LTUuOTQ2LTMuOTA4LTcuMDYxIDAtLjE4NiAwLS4zNzItLjE4Ni0uNTU3bC0uMzcyLS4xODYtLjM3My4zNzFjLS45My43NDQtMi4wNDcgMS4zMDEtMy4xNjMgMS4zMDEtMi42MDYgMC00LjY1My0yLjA0NC00LjY1My00LjY0NSAwLTIuNjAyIDIuMDQ3LTQuNjQ2IDQuNjUzLTQuNjQ2IDIuMjMzIDAgNC4yOCAxLjY3MiA0LjQ2NiAzLjkwMmwuMTg2IDEuMzAxLjc0NS0xLjExNWMwLS4xODYgMS44Ni0yLjk3MyA1LjM5Ny0yLjk3My41NTggMCAxLjMwMi4xODYgMi4wNDcuMzcyIDIuNzkxLjc0MyAzLjE2NCAzLjM0NCAzLjE2NCA0LjI3MyAwIC41NTguNTU4LjU1OC41NTguNTU4LjE4NiAwIC4zNzItLjE4Ni41NTgtLjE4Ni41NTktLjU1NyAxLjY3NS0xLjQ4NiAzLjM1LTEuNDg2Ljc0NSAwIDEuNjc1LjE4NSAyLjYwNi41NTcgNC4yOCAxLjg1OCAyLjQxOSA3LjI0NyAyLjQxOSA3LjQzMy0uMzcyLjkyOS0uMzcyIDEuMyAwIDEuNDg2aC4zNzJjLjE4NiAwIC4zNzIgMCAuNzQ1LS4xODYuNTU4LS4xODUgMS40ODktLjU1NyAyLjIzMy0uNTU3IDMuMTY0IDAgNS45NTUgMi42MDIgNS45NTUgNS45NDYgMCAzLjM0NS0yLjYwNSA1Ljk0Ni01Ljk1NSA1Ljk0NloiLz48L3N2Zz4=" alt="" style="width:26px;height:auto;">
@@ -767,6 +825,7 @@ document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
   if(!email){ cartError('Ingresá tu email: es obligatorio, ahí te enviamos el link de descarga.'); cartEmailEl.focus(); return; }
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ cartError('Ingresá un email válido.'); cartEmailEl.focus(); return; }
   if(cartEmail2El.value.trim().toLowerCase() !== email.toLowerCase()){ cartError('Los dos emails no coinciden. Revisalos: ahí te enviamos el link de descarga.'); cartEmail2El.focus(); return; }
+  if(!document.getElementById('cartTerms').checked){ cartError('Para comprar tenés que aceptar los Términos y Condiciones.'); return; }
   localStorage.setItem(EMAIL_KEY, email);
 
   const original = btn.innerHTML;
@@ -776,7 +835,7 @@ document.getElementById('checkoutBtn').addEventListener('click', async ()=>{
     const res = await fetch(FN_URL + '/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
-      body: JSON.stringify({ email, items: cart.map(c => ({ id: c.id })) })
+      body: JSON.stringify({ email, items: cart.map(c => ({ id: c.id })), accept_terms: true, terms_version: TERMS_VERSION })
     });
     const data = await res.json().catch(()=>({}));
     if(!res.ok || !data.init_point){
@@ -944,6 +1003,7 @@ function renderAdminPanel(){
     <div class="tabs-admin">
       <button data-tab="list" class="${adminTab==='list'?'active':''}">Libros publicados</button>
       <button data-tab="new" class="${adminTab==='new'?'active':''}">${editingId ? 'Editar libro' : 'Publicar nuevo libro'}</button>
+      <button data-tab="billing" class="${adminTab==='billing'?'active':''}">Facturaciones</button>
     </div>
     <div id="adminTabBody"></div>
   `;
@@ -958,7 +1018,7 @@ function renderAdminPanel(){
       renderAdminPanel();
     });
   });
-  if(adminTab==='list') renderAdminList(); else renderAdminForm();
+  if(adminTab==='list') renderAdminList(); else if(adminTab==='billing') renderBilling(); else renderAdminForm();
 }
 
 function renderAdminList(){
@@ -1093,6 +1153,143 @@ function renderAdminForm(){
     renderFilters(); renderCatalog();
     showToast('Catálogo actualizado');
   });
+}
+
+/* ---------- TÉRMINOS: ruta #terminos ---------- */
+const TERMS_VERSION = '2026-09-28';
+document.getElementById('termsVersionLabel').textContent = TERMS_VERSION;
+function applyRoute(){
+  const isTerms = location.hash === '#terminos';
+  document.getElementById('terminos-page').style.display = isTerms ? 'block' : 'none';
+  document.querySelectorAll('section.hero, section.section:not(#terminos-page)').forEach(el => { el.style.display = isTerms ? 'none' : ''; });
+  if(isTerms){ window.scrollTo(0, 0); }
+  else if(location.hash.length > 1){ try{ const el = document.querySelector(location.hash); if(el) setTimeout(()=> el.scrollIntoView(), 0); }catch(e){} }
+}
+window.addEventListener('hashchange', applyRoute);
+applyRoute();
+
+/* ---------- FACTURACIONES (panel admin) ---------- */
+const BUE = 'America/Argentina/Buenos_Aires';
+const ST_LABEL = { approved:'Pagado', pending:'Pendiente', rejected:'Rechazado', refunded:'Reembolsado', error:'Error', amount_mismatch:'Revisar monto' };
+const fmtDT = d => d ? new Date(d).toLocaleString('es-AR', { timeZone: BUE, dateStyle:'short', timeStyle:'medium' }) : '—';
+const ymd = d => new Date(d).toLocaleDateString('en-CA', { timeZone: BUE });
+let bill = { rows: [], inv: {}, status: 'approved', month: '', q: '', detail: null };
+
+async function renderBilling(){
+  const body = document.getElementById('adminTabBody');
+  body.innerHTML = '<p style="text-align:center;color:var(--ink-soft);">Cargando…</p>';
+  const [o, i] = await Promise.all([
+    sb.from('orders').select('id,email,total,status,mp_payment_id,created_at,paid_at,terms_accepted_at,terms_version,email_sent_at,order_items(title,unit_price)').order('created_at', { ascending:false }).limit(2000),
+    sb.from('invoices').select('*')
+  ]);
+  if(o.error || i.error){
+    console.error(o.error || i.error);
+    body.innerHTML = '<div class="admin-error">No se pudieron leer los pedidos. ¿Corriste setup-facturacion.sql en Supabase?</div>';
+    return;
+  }
+  bill.rows = o.data || [];
+  bill.inv = Object.fromEntries((i.data || []).map(x => [x.order_id, x]));
+  bill.detail ? renderBillDetail() : renderBillList();
+}
+
+function billFiltered(){
+  return bill.rows.filter(r => {
+    if(bill.status !== 'all' && r.status !== bill.status) return false;
+    if(bill.month && ymd(r.paid_at || r.created_at).slice(0, 7) !== bill.month) return false;
+    if(bill.q && !r.email.toLowerCase().includes(bill.q.toLowerCase())) return false;
+    return true;
+  });
+}
+
+function renderBillList(){
+  const body = document.getElementById('adminTabBody');
+  const rows = billFiltered();
+  const paid = rows.filter(r => r.status === 'approved');
+  const total = paid.reduce((a, r) => a + Number(r.total), 0);
+  const done = paid.filter(r => bill.inv[r.id] && bill.inv[r.id].invoice_number).length;
+  const opts = [['approved','Pagadas'],['all','Todas'],['pending','Pendientes'],['rejected','Rechazadas'],['refunded','Reembolsadas'],['error','Con error']];
+  body.innerHTML = `
+    <div class="bill-filters">
+      <select id="bStatus">${opts.map(([v, l]) => `<option value="${v}" ${bill.status===v?'selected':''}>${l}</option>`).join('')}</select>
+      <input type="month" id="bMonth" value="${bill.month}">
+      <input type="search" id="bQ" placeholder="Buscar por email" value="${esc(bill.q)}">
+      <button class="btn btn-ghost" id="bCsv" style="padding:8px 14px;">Exportar CSV</button>
+    </div>
+    <div class="admin-note">${paid.length} ventas pagadas · ${fmt(total)} · ${done} facturadas · <strong>${paid.length - done} sin facturar</strong></div>
+    <div class="book-list-admin">${rows.length ? rows.map(r => {
+      const inv = bill.inv[r.id];
+      const pill = r.status === 'approved'
+        ? (inv && inv.invoice_number ? '<span class="pill ok">Facturada</span>' : '<span class="pill warn">Sin facturar</span>')
+        : `<span class="pill">${ST_LABEL[r.status] || esc(r.status)}</span>`;
+      return `<div class="book-row-admin bill-row" data-id="${r.id}">
+        <div class="brinfo"><strong>${esc(r.email)}</strong><span>${fmtDT(r.paid_at || r.created_at)} · ${(r.order_items || []).map(i => esc(i.title)).join(', ')}</span></div>
+        <div style="text-align:right;font-size:13px;"><strong>${fmt(r.total)}</strong><br>${pill}</div>
+      </div>`;
+    }).join('') : '<div class="empty-catalog">No hay compras con esos filtros.</div>'}</div>`;
+  document.getElementById('bStatus').addEventListener('change', e => { bill.status = e.target.value; renderBillList(); });
+  document.getElementById('bMonth').addEventListener('change', e => { bill.month = e.target.value; renderBillList(); });
+  document.getElementById('bQ').addEventListener('change', e => { bill.q = e.target.value.trim(); renderBillList(); });
+  document.getElementById('bCsv').addEventListener('click', exportBillCsv);
+  body.querySelectorAll('.bill-row').forEach(el => el.addEventListener('click', () => { bill.detail = el.dataset.id; renderBillDetail(); }));
+}
+
+function renderBillDetail(){
+  const body = document.getElementById('adminTabBody');
+  const r = bill.rows.find(x => x.id === bill.detail);
+  if(!r){ bill.detail = null; renderBillList(); return; }
+  const inv = bill.inv[r.id] || {};
+  const val = v => esc(v || '');
+  body.innerHTML = `
+    <button class="remove-link" id="bBack" style="margin-bottom:14px;">← Volver al listado</button>
+    <table class="bill-detail">
+      <tr><td>Estado</td><td>${ST_LABEL[r.status] || esc(r.status)}</td></tr>
+      <tr><td>Fecha y hora del pago</td><td>${fmtDT(r.paid_at)}</td></tr>
+      <tr><td>Pedido creado</td><td>${fmtDT(r.created_at)}</td></tr>
+      <tr><td>Email del comprador</td><td>${esc(r.email)}</td></tr>
+      <tr><td>Libros</td><td>${(r.order_items || []).map(i => `${esc(i.title)} — ${fmt(i.unit_price)}`).join('<br>')}</td></tr>
+      <tr><td>Total</td><td><strong>${fmt(r.total)}</strong></td></tr>
+      <tr><td>ID de pago (Mercado Pago)</td><td>${esc(r.mp_payment_id || '—')}</td></tr>
+      <tr><td>ID de pedido</td><td style="word-break:break-all;">${esc(r.id)}</td></tr>
+      <tr><td>Aceptó T&amp;C</td><td>${fmtDT(r.terms_accepted_at)}${r.terms_version ? ' · versión ' + esc(r.terms_version) : ''}</td></tr>
+      <tr><td>Mail de descarga enviado</td><td>${fmtDT(r.email_sent_at)}</td></tr>
+    </table>
+    <h4 style="margin:0 0 12px;font-weight:500;">Factura</h4>
+    <form id="invForm">
+      <div class="field-row">
+        <div class="field"><label>Nº de comprobante</label><input type="text" id="iNum" placeholder="00001-00000123" value="${val(inv.invoice_number)}"></div>
+        <div class="field"><label>Fecha de emisión</label><input type="date" id="iDate" value="${val(inv.invoice_date)}"></div>
+      </div>
+      <div class="field"><label>CAE</label><input type="text" id="iCae" value="${val(inv.cae)}"></div>
+      <div class="field"><label>Notas</label><textarea id="iNotes">${val(inv.notes)}</textarea></div>
+      <button class="btn btn-primary" type="submit">Guardar factura</button>
+    </form>`;
+  document.getElementById('bBack').addEventListener('click', () => { bill.detail = null; renderBillList(); });
+  document.getElementById('invForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const g = id => document.getElementById(id).value.trim() || null;
+    const row = { order_id: r.id, invoice_number: g('iNum'), cae: g('iCae'), invoice_date: g('iDate'), notes: g('iNotes'), updated_at: new Date().toISOString() };
+    const { data, error } = await sb.from('invoices').upsert(row, { onConflict: 'order_id' }).select().single();
+    if(error){ console.error(error); showToast('Error al guardar: ' + error.message); return; }
+    bill.inv[r.id] = data;
+    showToast('Factura guardada');
+  });
+}
+
+function exportBillCsv(){
+  const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const head = ['Fecha pago','Hora pago','Email','Libros','Total ARS','Estado','ID pago MP','ID pedido','Nº factura','CAE','Fecha factura'];
+  const lines = billFiltered().map(r => {
+    const d = new Date(r.paid_at || r.created_at), inv = bill.inv[r.id] || {};
+    return [d.toLocaleDateString('es-AR', { timeZone: BUE }), d.toLocaleTimeString('es-AR', { timeZone: BUE }), r.email,
+      (r.order_items || []).map(i => i.title).join(' | '), r.total, ST_LABEL[r.status] || r.status, r.mp_payment_id || '', r.id,
+      inv.invoice_number || '', inv.cae || '', inv.invoice_date || ''].map(q).join(';');
+  });
+  const blob = new Blob(['\ufeff' + [head.map(q).join(';'), ...lines].join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'facturaciones_' + (bill.month || 'todas') + '.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 /* ---------- MOBILE MENU ---------- */
