@@ -646,17 +646,6 @@ const SUPABASE_KEY = 'sb_publishable_rE1QCRUlF4FAJph_UhDR8w_7v4PnjRH';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const FN_URL = SUPABASE_URL + '/functions/v1';
 
-// Libro semilla: se inserta una única vez si la tabla está vacía.
-const SEED_BOOKS = [
-  {
-    title: '100 preguntas que no te animás a responder',
-    category: 'Autoayuda',
-    price: 4500,
-    review: 'Un libro de autoayuda sin frases hechas: cien preguntas incómodas, directas, pensadas para que te mires al espejo sin filtros. No es un manual de bienestar, es un espejo.',
-    cover_url: ''
-  }
-];
-
 const CART_KEY = 'ec_cart_v1';
 
 let books = [];
@@ -664,9 +653,11 @@ let cart = (JSON.parse(localStorage.getItem(CART_KEY) || '[]') || []).map(c => (
 let activeFilter = 'Todas';
 let currentSession = null;
 
+// Solo se aceptan portadas https (Storage de Supabase u otro https); cualquier otra cosa se descarta.
+function safeUrl(u){ if(!u) return ''; try{ const x = new URL(String(u||''), location.href); return x.protocol === 'https:' ? x.href : ''; }catch(e){ return ''; } }
 function fmt(n){ return '$' + Number(n).toLocaleString('es-AR'); }
 function initials(title){
-  return title.split(' ').filter(w=>w.length>2).slice(0,2).map(w=>w[0]).join('').toUpperCase() || title[0];
+  return esc(title.split(' ').filter(w=>w.length>2).slice(0,2).map(w=>w[0]).join('').toUpperCase() || title[0]);
 }
 // Adaptador: la base usa "cover_url", el front usa "cover" para no reescribir toda la UI.
 function mapRow(r){ return { id: r.id, title: r.title, category: r.category, price: r.price, review: r.review, cover: r.cover_url || '', pdf_path: r.pdf_path || '' }; }
@@ -674,13 +665,7 @@ function mapRow(r){ return { id: r.id, title: r.title, category: r.category, pri
 async function loadBooksFromDB(){
   const { data, error } = await sb.from('books').select('*').order('created_at', { ascending: true });
   if(error){ console.error(error); showToast('Error cargando el catálogo'); return []; }
-  if(data.length === 0){
-    // Primera vez: sembramos el libro inicial.
-    await sb.from('books').insert(SEED_BOOKS);
-    const again = await sb.from('books').select('*').order('created_at', { ascending: true });
-    return (again.data || []).map(mapRow);
-  }
-  return data.map(mapRow);
+  return (data || []).map(mapRow);
 }
 
 /* ---------- CATALOG RENDER ---------- */
@@ -688,7 +673,7 @@ function renderFilters(){
   const cats = ['Todas', ...new Set(books.map(b=>b.category))];
   const row = document.getElementById('filterRow');
   row.innerHTML = cats.map(c =>
-    `<button class="filter-chip ${c===activeFilter?'active':''}" data-cat="${c}">${c}</button>`
+    `<button class="filter-chip ${c===activeFilter?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`
   ).join('');
   row.querySelectorAll('.filter-chip').forEach(btn=>{
     btn.addEventListener('click', ()=>{ activeFilter = btn.dataset.cat; renderFilters(); renderCatalog(); });
@@ -705,19 +690,19 @@ function renderCatalog(){
   grid.innerHTML = list.map(b => `
     <article class="book-card">
       <div class="book-cover">
-        <span class="book-tag">${b.category}</span>
+        <span class="book-tag">${esc(b.category)}</span>
         ${b.cover
-          ? `<img src="${b.cover}" alt="Portada de ${b.title}">`
+          ? `<img src="${esc(safeUrl(b.cover))}" alt="Portada de ${esc(b.title)}">`
           : `<div class="cover-placeholder"><div class="frame"><span>${initials(b.title)}</span></div><small>Portada pendiente</small></div>`
         }
       </div>
       <div class="book-body">
-        <h3>${b.title}</h3>
-        <p class="review">${b.review}</p>
+        <h3>${esc(b.title)}</h3>
+        <p class="review">${esc(b.review)}</p>
         <div class="book-footer">
           <span class="price">${fmt(b.price)}</span>
           ${b.pdf_path
-            ? `<button class="add-btn" data-id="${b.id}">＋ Añadir</button>`
+            ? `<button class="add-btn" data-id="${esc(b.id)}">＋ Añadir</button>`
             : `<button class="add-btn" disabled>Próximamente</button>`}
         </div>
       </div>
@@ -765,12 +750,12 @@ function renderCart(){
     total += Number(b.price);
     return `
       <div class="cart-item">
-        <div class="mini-cover">${b.cover ? `<img src="${b.cover}" style="width:100%;height:100%;object-fit:contain;">` : initials(b.title)}</div>
+        <div class="mini-cover">${safeUrl(b.cover) ? `<img src="${esc(safeUrl(b.cover))}" style="width:100%;height:100%;object-fit:contain;">` : initials(b.title)}</div>
         <div class="cart-item-info">
-          <h5>${b.title}</h5>
+          <h5>${esc(b.title)}</h5>
           <div class="row">
             <span>${fmt(b.price)}</span>
-            <button class="remove-link" data-id="${c.id}">Quitar</button>
+            <button class="remove-link" data-id="${esc(c.id)}">Quitar</button>
           </div>
         </div>
       </div>
@@ -1027,11 +1012,11 @@ function renderAdminList(){
   }
   body.innerHTML = `<div class="book-list-admin">` + books.map(b=>`
     <div class="book-row-admin">
-      <div class="mini-cover">${b.cover ? `<img src="${b.cover}" style="width:100%;height:100%;object-fit:contain;">` : initials(b.title)}</div>
-      <div class="brinfo"><strong>${b.title}${b.pdf_path ? '' : '<span class="badge-nopdf">Sin PDF</span>'}</strong><span>${b.category} · ${fmt(b.price)}</span></div>
+      <div class="mini-cover">${safeUrl(b.cover) ? `<img src="${esc(safeUrl(b.cover))}" style="width:100%;height:100%;object-fit:contain;">` : initials(b.title)}</div>
+      <div class="brinfo"><strong>${esc(b.title)}${b.pdf_path ? '' : '<span class="badge-nopdf">Sin PDF</span>'}</strong><span>${esc(b.category)} · ${fmt(b.price)}</span></div>
       <div class="row-actions">
-        <button data-edit="${b.id}">Editar</button>
-        <button data-del="${b.id}">Eliminar</button>
+        <button data-edit="${esc(b.id)}">Editar</button>
+        <button data-del="${esc(b.id)}">Eliminar</button>
       </div>
     </div>
   `).join('') + `</div>`;
@@ -1056,20 +1041,20 @@ function renderAdminForm(){
   const editing = editingId ? books.find(b=>b.id===editingId) : null;
   body.innerHTML = `
     <form id="bookForm">
-      <div class="field"><label>Título</label><input type="text" id="fTitle" required value="${editing?editing.title.replace(/"/g,'&quot;'):''}"></div>
+      <div class="field"><label>Título</label><input type="text" id="fTitle" required value="${editing?esc(editing.title):''}"></div>
       <div class="field-row">
-        <div class="field"><label>Categoría / etiqueta</label><input type="text" id="fCategory" required list="catList" value="${editing?editing.category:''}">
-          <datalist id="catList">${[...new Set(books.map(b=>b.category))].map(c=>`<option value="${c}">`).join('')}</datalist>
+        <div class="field"><label>Categoría / etiqueta</label><input type="text" id="fCategory" required list="catList" value="${editing?esc(editing.category):''}">
+          <datalist id="catList">${[...new Set(books.map(b=>b.category))].map(c=>`<option value="${esc(c)}">`).join('')}</datalist>
         </div>
-        <div class="field"><label>Precio (ARS)</label><input type="number" id="fPrice" required min="0" value="${editing?editing.price:''}"></div>
+        <div class="field"><label>Precio (ARS)</label><input type="number" id="fPrice" required min="0" value="${editing?Number(editing.price):''}"></div>
       </div>
-      <div class="field"><label>Reseña</label><textarea id="fReview" required>${editing?editing.review:''}</textarea></div>
+      <div class="field"><label>Reseña</label><textarea id="fReview" required>${editing?esc(editing.review):''}</textarea></div>
       <div class="field"><label>Portada (imagen, opcional)</label><input type="file" id="fCoverFile" accept="image/*">
-        <input type="hidden" id="fCover" value="${editing?editing.cover:''}">
+        <input type="hidden" id="fCover" value="${editing?esc(editing.cover):''}">
         <small id="uploadStatus" style="color:var(--ink-soft);"></small>
       </div>
       <div class="field"><label>Archivo PDF del libro (el que se entrega al comprador)</label><input type="file" id="fPdfFile" accept="application/pdf,.pdf">
-        <input type="hidden" id="fPdf" value="${editing?editing.pdf_path:''}">
+        <input type="hidden" id="fPdf" value="${editing?esc(editing.pdf_path):''}">
         <small id="pdfStatus" style="color:var(--ink-soft);">${editing && editing.pdf_path ? 'PDF cargado ✓ (subí otro solo si querés reemplazarlo)' : 'Sin PDF: el libro no se puede comprar hasta cargarlo.'}</small>
       </div>
       <div style="display:flex;gap:10px;">
